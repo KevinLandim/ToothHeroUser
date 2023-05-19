@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart' ;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'firebase_options.dart';
   
@@ -17,7 +17,7 @@ import 'firebase_options.dart';
 Future<void> main() async {
   // Ensure that plugin services are initialized so that `availableCameras()`
   // can be called before `runApp()`
-  //final storage = FirebaseStorage.instance;
+
   WidgetsFlutterBinding.ensureInitialized();
 
 
@@ -157,22 +157,23 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     _controller.dispose();
     super.dispose();
   }
-  Future<void> addImagem(String path) async{
+ /* Future<void> addImagem(String path) async{
     final storage = FirebaseStorage.instance;
     File file =File(path);
     try{
       String ref = 'images/img-${DateTime.now().toString()}.jpg';
 
-
-
-     /* await storage.ref(ref)
+     *//* await storage.ref(ref)
           .child('images')
-          .putFile(file);*/
+          .putFile(file);*//*
 
       await storage.ref(ref)
           .child('images')
           .putFile(file);
-      fullPath=storage
+
+      String fullPath=storage.ref().fullPath;
+      print(fullPath);
+
 
 
 
@@ -180,7 +181,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       throw Exception('Erro no upload:${e.code}');
     }
 
-  }
+  }*/
 
 
   @override
@@ -214,8 +215,11 @@ class TakePictureScreenState extends State<TakePictureScreen> {
             // Attempt to take a picture and get the file `image`
             // where it was saved.
             final image = await _controller.takePicture();
-
-            final savedImage = await ImageGallerySaver.saveFile(image.path).then((value) => null);
+            try {
+              final savedImage = await ImageGallerySaver.saveFile(image.path);
+            } catch(e){
+              print("Ocorreu um erro ao salvar imagem: ${e}");
+            }
 
             
             if (!mounted) return;
@@ -316,12 +320,16 @@ class DadosPessoais extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     CollectionReference firestore = FirebaseFirestore.instance.collection('emergencias');
+    TextEditingController nomeController =TextEditingController();
+    TextEditingController telefoneController =TextEditingController();
 
-    Future<void> addEmergencia(String nome,String telefone, imagePath){
+    Future<void> addEmergencia(String nome,String telefone, String fullPath){
       return firestore.add({
         'nome': nome,
         'telefone':telefone,
-        'Id foto': imagePath
+        'dataHora': DateTime.now().toString(),
+        'status': 'aberto',
+        'fotos': fullPath
       }
       ).then((value) => ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Gravando dados no Firestore...'))
@@ -329,12 +337,31 @@ class DadosPessoais extends StatelessWidget{
       ));
 
     }
+    Future<void> addImagem(String path) async{
+      final storage = FirebaseStorage.instance;
+      File file =File(path);
+      try{
+       String nome = 'img-${DateTime.now().toString()}.jpg';
+
+
+
+        await storage.ref('images')
+            .child('img-${DateTime.now().toString()}.jpg')
+            .putFile(file);
+
+        String fullPath=storage.ref().fullPath.toString();
+         await addEmergencia(nomeController.text, telefoneController.text,"images/$nome");
+
+      } on FirebaseException catch(e){
+        throw Exception('Erro no upload:${e.code}');
+      }
+
+    }
 
 
     TakePictureScreenState TakePictureScreenStateInstancia = TakePictureScreenState();
 
-    TextEditingController nomeController =TextEditingController();
-    TextEditingController telefoneController =TextEditingController();
+
     return Scaffold(
       body: Container(
         margin: EdgeInsets.only(top:60.0),
@@ -361,8 +388,9 @@ class DadosPessoais extends StatelessWidget{
                 child: Image.file(File(imagePath))),
             ElevatedButton(
                 onPressed: (){
-                  TakePictureScreenStateInstancia.addImagem(imagePath);
-                  addEmergencia(nomeController.text, telefoneController.text, imagePath);},
+                  addImagem(imagePath);
+                 // addEmergencia(nomeController.text, telefoneController.text, imagePath)
+                  ;},
                 child: Text("Solicitar emergência!"),
             ),
 
