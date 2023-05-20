@@ -10,7 +10,6 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:firebase_storage/firebase_storage.dart' ;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'firebase_options.dart';
-  
 
 
 
@@ -26,6 +25,7 @@ Future<void> main() async {
 
   final firstCamera = cameras.first;
    await Firebase.initializeApp(
+        //name:'toothhero-4102d',
       options:DefaultFirebaseOptions.currentPlatform);
 
   runApp(
@@ -157,31 +157,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     _controller.dispose();
     super.dispose();
   }
- /* Future<void> addImagem(String path) async{
-    final storage = FirebaseStorage.instance;
-    File file =File(path);
-    try{
-      String ref = 'images/img-${DateTime.now().toString()}.jpg';
 
-     *//* await storage.ref(ref)
-          .child('images')
-          .putFile(file);*//*
-
-      await storage.ref(ref)
-          .child('images')
-          .putFile(file);
-
-      String fullPath=storage.ref().fullPath;
-      print(fullPath);
-
-
-
-
-    } on FirebaseException catch(e){
-      throw Exception('Erro no upload:${e.code}');
-    }
-
-  }*/
 
 
   @override
@@ -336,6 +312,8 @@ class DadosPessoais extends StatelessWidget{
 
       ));
 
+
+
     }
     Future<void> addImagem(String path) async{
       final storage = FirebaseStorage.instance;
@@ -345,11 +323,11 @@ class DadosPessoais extends StatelessWidget{
 
 
 
-        await storage.ref('images')
-            .child('img-${DateTime.now().toString()}.jpg')
+        await storage.ref('images')//ref é a pasta
+            .child('img-${DateTime.now().toString()}.jpg')//child é o nome da foto
             .putFile(file);
 
-        String fullPath=storage.ref().fullPath.toString();
+        //String fullPath=storage.ref().fullPath.toString();
          await addEmergencia(nomeController.text, telefoneController.text,"images/$nome");
 
       } on FirebaseException catch(e){
@@ -359,7 +337,6 @@ class DadosPessoais extends StatelessWidget{
     }
 
 
-    TakePictureScreenState TakePictureScreenStateInstancia = TakePictureScreenState();
 
 
     return Scaffold(
@@ -390,6 +367,11 @@ class DadosPessoais extends StatelessWidget{
                 onPressed: (){
                   addImagem(imagePath);
                  // addEmergencia(nomeController.text, telefoneController.text, imagePath)
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder:(context)=>DentisList(
+                          ) )
+                  );
                   ;},
                 child: Text("Solicitar emergência!"),
             ),
@@ -403,6 +385,67 @@ class DadosPessoais extends StatelessWidget{
 
 
 
+
+}
+
+class DentisList extends StatelessWidget{
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Dentistas disponíveis')),
+      body: Center(
+        child: Expanded(
+          child: StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance.collection('atendimentos')
+            .where('status', isEqualTo: "Aceito")
+                .snapshots(),
+            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasError) {
+                return Text('Algo deu errado');
+              }
+
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator(
+                  strokeWidth: 2.0,
+                );
+              }
+
+              // Verifique se há dados antes de acessar 'docs'
+              if (snapshot.hasData) {
+                return ListView(
+                  children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                    Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                    return Container(
+                      decoration: BoxDecoration(
+                        border:Border.all(
+                            color:Colors.blue,
+                            width:2
+                        ),
+                      ),
+                      child: ListTile(
+                        subtitle: Text("data que o dentista aceitou ${data['datahora'] ?? 'Data/Hora não disponível'}"),
+                        title: Text("Nome do dentista:${data['nomeDentista'] ?? 'Nome não disponível'}"),
+                        trailing:IconButton(
+                          icon: Icon(Icons.ad_units),
+                          onPressed:(){
+                           },
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                );
+              } else {
+                return Text('Sem dados disponíveis');
+              }
+            },
+          ),
+        )
+      ),
+
+
+    );
+  }
 
 }
 

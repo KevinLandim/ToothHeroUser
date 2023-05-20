@@ -25,7 +25,10 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -44,39 +47,30 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAnfKGUab8aHpWPY8lx8XvNMKdVCibBnIA',
-    appId: '1:1098231761617:web:2a5798b609afbf8dd513f0',
-    messagingSenderId: '1098231761617',
-    projectId: 'functionsteste-96ae0',
-    authDomain: 'functionsteste-96ae0.firebaseapp.com',
-    storageBucket: 'functionsteste-96ae0.appspot.com',
+    apiKey: 'AIzaSyA8qHOgIakCL63kDh0N1b3hfiN5lHcquvA',
+    appId: '1:487195058314:web:6e91de286567bdae584d73',
+    messagingSenderId: '487195058314',
+    projectId: 'toothhero-4102d',
+    authDomain: 'toothhero-4102d.firebaseapp.com',
+    storageBucket: 'toothhero-4102d.appspot.com',
+    measurementId: 'G-8ZF4QZ61CW',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyC_PMkvzlee4r0sXJKqAyaAX94HwFqGwpY',
-    appId: '1:1098231761617:android:c7d17e2dfa98c24fd513f0',
-    messagingSenderId: '1098231761617',
-    projectId: 'functionsteste-96ae0',
-    storageBucket: 'functionsteste-96ae0.appspot.com',
+    apiKey: 'AIzaSyBwiUUfaPge_InSPJQfYGb6r9BKts3ajjA',
+    appId: '1:487195058314:android:195c6a0b6999d648584d73',
+    messagingSenderId: '487195058314',
+    projectId: 'toothhero-4102d',
+    storageBucket: 'toothhero-4102d.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAmaOiYXZidSMBzVjGA7skinLGOKGl0kZA',
-    appId: '1:1098231761617:ios:c970d7356edee1e2d513f0',
-    messagingSenderId: '1098231761617',
-    projectId: 'functionsteste-96ae0',
-    storageBucket: 'functionsteste-96ae0.appspot.com',
-    iosClientId: '1098231761617-4pqvti0habbcmqatgdg897tb6mau2r3c.apps.googleusercontent.com',
-    iosBundleId: 'com.example.pictureflutter',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyAmaOiYXZidSMBzVjGA7skinLGOKGl0kZA',
-    appId: '1:1098231761617:ios:c970d7356edee1e2d513f0',
-    messagingSenderId: '1098231761617',
-    projectId: 'functionsteste-96ae0',
-    storageBucket: 'functionsteste-96ae0.appspot.com',
-    iosClientId: '1098231761617-4pqvti0habbcmqatgdg897tb6mau2r3c.apps.googleusercontent.com',
+    apiKey: 'AIzaSyBjKoVP5xQ402MTQML7Ue8W5XXRJIBg3iA',
+    appId: '1:487195058314:ios:108195563a61ba9b584d73',
+    messagingSenderId: '487195058314',
+    projectId: 'toothhero-4102d',
+    storageBucket: 'toothhero-4102d.appspot.com',
+    iosClientId: '487195058314-h372ddgeasd1rq0rfh0qonoj728ip0uf.apps.googleusercontent.com',
     iosBundleId: 'com.example.pictureflutter',
   );
 }
