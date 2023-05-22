@@ -402,6 +402,21 @@ class DentisList extends StatefulWidget{
 }
 
 class _DentisListState extends State<DentisList> {
+  Future<void> updateStatus(String documentId) async {
+    try {
+      CollectionReference emergenciasCollection =
+      FirebaseFirestore.instance.collection('emergencias');
+
+      await emergenciasCollection.doc(documentId).update({
+        'status': 'aceita',
+      });
+
+      print('Document status updated successfully.');
+    } catch (e) {
+      print('Error updating document status: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -444,10 +459,13 @@ class _DentisListState extends State<DentisList> {
                         trailing:IconButton(
                           icon: Icon(Icons.ad_units),
                           onPressed:(){
-
-
-
-
+                            updateStatus(widget.documentId);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Você aceitou este dentista. \n'
+                                    'Ele te ligará em breve'),
+                              ),
+                            );
                            },
                         ),
                       ),
