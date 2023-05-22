@@ -299,22 +299,33 @@ class DadosPessoais extends StatelessWidget{
     TextEditingController nomeController =TextEditingController();
     TextEditingController telefoneController =TextEditingController();
 
-    Future<void> addEmergencia(String nome,String telefone, String fullPath){
-      return firestore.add({
-        'nome': nome,
-        'telefone':telefone,
-        'dataHora': DateTime.now().toString(),
-        'status': 'aberto',
-        'fotos': fullPath
+
+
+    Future<void> addEmergencia(String nome, String telefone, String fullPath) async {
+      try {
+        DocumentReference documentRef = await firestore.add({
+          'nome': nome,
+          'telefone': telefone,
+          'datahora': DateTime.now().toString(),
+          'status': 'aberta',
+          'fotos': fullPath,
+        });
+
+        String documentId = documentRef.id;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Gravando dados no Firestore... Document ID: $documentId')),
+        );
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => DentisList(documentId: documentId)),
+        );
+      } catch (e) {
+        print('Error adding emergencia: $e');
       }
-      ).then((value) => ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Gravando dados no Firestore...'))
-
-      ));
-
-
-
     }
+
+
     Future<void> addImagem(String path) async{
       final storage = FirebaseStorage.instance;
       File file =File(path);
@@ -323,12 +334,12 @@ class DadosPessoais extends StatelessWidget{
 
 
 
-        await storage.ref('images')//ref é a pasta
-            .child('img-${DateTime.now().toString()}.jpg')//child é o nome da foto
+        await storage.ref('emergencias')//ref é a pasta
+            .child(nome)//child é o nome da foto
             .putFile(file);
 
         //String fullPath=storage.ref().fullPath.toString();
-         await addEmergencia(nomeController.text, telefoneController.text,"images/$nome");
+         await addEmergencia(nomeController.text, telefoneController.text,"emergencias/$nome");
 
       } on FirebaseException catch(e){
         throw Exception('Erro no upload:${e.code}');
@@ -366,13 +377,7 @@ class DadosPessoais extends StatelessWidget{
             ElevatedButton(
                 onPressed: (){
                   addImagem(imagePath);
-                 // addEmergencia(nomeController.text, telefoneController.text, imagePath)
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder:(context)=>DentisList(
-                          ) )
-                  );
-                  ;},
+                  },
                 child: Text("Solicitar emergência!"),
             ),
 
@@ -384,12 +389,19 @@ class DadosPessoais extends StatelessWidget{
   }
 
 
-
-
 }
 
-class DentisList extends StatelessWidget{
+class DentisList extends StatefulWidget{
 
+  final String documentId;
+
+  const DentisList({super.key, required this.documentId});
+
+  @override
+  State<DentisList> createState() => _DentisListState();
+}
+
+class _DentisListState extends State<DentisList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -399,11 +411,13 @@ class DentisList extends StatelessWidget{
           child: StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance.collection('atendimentos')
             .where('status', isEqualTo: "Aceito")
+                .where('emergenciaId',isEqualTo:widget.documentId)
                 .snapshots(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError) {
                 return Text('Algo deu errado');
               }
+
 
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return CircularProgressIndicator(
@@ -412,7 +426,7 @@ class DentisList extends StatelessWidget{
               }
 
               // Verifique se há dados antes de acessar 'docs'
-              if (snapshot.hasData) {
+              if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
                 return ListView(
                   children: snapshot.data!.docs.map((DocumentSnapshot document) {
                     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
@@ -425,10 +439,15 @@ class DentisList extends StatelessWidget{
                       ),
                       child: ListTile(
                         subtitle: Text("data que o dentista aceitou ${data['datahora'] ?? 'Data/Hora não disponível'}"),
-                        title: Text("Nome do dentista:${data['nomeDentista'] ?? 'Nome não disponível'}"),
+                        title: Text("Nome do dentista: ${data['nomeDentista'] ?? 'Nome não disponível'}"
+                            "\nId do dentista: ${data['profissionalId']}"),
                         trailing:IconButton(
                           icon: Icon(Icons.ad_units),
                           onPressed:(){
+
+
+
+
                            },
                         ),
                       ),
@@ -436,7 +455,24 @@ class DentisList extends StatelessWidget{
                   }).toList(),
                 );
               } else {
-                return Text('Sem dados disponíveis');
+                return Container(
+                  margin: EdgeInsets.only(top:30.0),
+                  child: Column(
+
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                    CircularProgressIndicator(
+                    strokeWidth: 2.0,
+                  ),
+                      SizedBox(height: 16.0),
+                      Text(
+                        'Aguardando dentistas aceitarem'
+                      )
+
+                    ],
+                  ),
+                );
+
               }
             },
           ),
@@ -446,6 +482,5 @@ class DentisList extends StatelessWidget{
 
     );
   }
-
 }
 
