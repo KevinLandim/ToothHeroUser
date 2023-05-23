@@ -313,7 +313,7 @@ class DadosPessoais extends StatelessWidget{
 
         String documentId = documentRef.id;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gravando dados no Firestore... Document ID: $documentId')),
+          SnackBar(content: Text('Emergência aberta!')),
         );
 
         Navigator.push(
@@ -417,6 +417,30 @@ class _DentisListState extends State<DentisList> {
     }
   }
 
+
+  void getDocumentFieldsById(String collection, String documentId, Function(Map<String, dynamic>?) onSuccess, Function(dynamic) onError) {
+    FirebaseFirestore.instance
+        .collection(collection)
+        .doc(documentId)
+        .get()
+        .then((DocumentSnapshot<Map<String, dynamic>> documentSnapshot) {
+      if (documentSnapshot.exists) {
+        // Document found
+        Map<String, dynamic>? documentFields = documentSnapshot.data();
+        onSuccess(documentFields!);
+      } else {
+        // Document does not exist
+        onSuccess(null);
+      }
+    }).catchError((error) {
+      // Error occurred
+      onError(error);
+    });
+  }
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -428,6 +452,7 @@ class _DentisListState extends State<DentisList> {
             .where('status', isEqualTo: "Aceito")
                 .where('emergenciaId',isEqualTo:widget.documentId)
                 .snapshots(),
+
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError) {
                 return Text('Algo deu errado');
@@ -444,7 +469,10 @@ class _DentisListState extends State<DentisList> {
               if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
                 return ListView(
                   children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                    Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+
+              Map <String, dynamic> data = document.data() as Map<String, dynamic>;
+
+
                     return Container(
                       decoration: BoxDecoration(
                         border:Border.all(
@@ -453,9 +481,8 @@ class _DentisListState extends State<DentisList> {
                         ),
                       ),
                       child: ListTile(
-                        subtitle: Text("data que o dentista aceitou ${data['datahora'] ?? 'Data/Hora não disponível'}"),
-                        title: Text("Nome do dentista: ${data['nomeDentista'] ?? 'Nome não disponível'}"
-                            "\nId do dentista: ${data['profissionalId']}"),
+                        subtitle: Text("Data que o dentista aceitou ${data['datahora'] ?? 'Data/Hora não disponível'}"),
+                        title: Text("Nome do dentista: ${data['nome'] ?? 'Nome não disponível'}"),
                         trailing:IconButton(
                           icon: Icon(Icons.ad_units),
                           onPressed:(){
