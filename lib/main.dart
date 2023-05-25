@@ -10,22 +10,15 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:firebase_storage/firebase_storage.dart' ;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 
 
 Future<void> main() async {
-  // Ensure that plugin services are initialized so that `availableCameras()`
-  // can be called before `runApp()`
-
   WidgetsFlutterBinding.ensureInitialized();
-
-
   final cameras = await availableCameras();
-
-
   final firstCamera = cameras.first;
    await Firebase.initializeApp(
-        //name:'toothhero-4102d',
       options:DefaultFirebaseOptions.currentPlatform);
 
   runApp(
@@ -41,10 +34,58 @@ Future<void> main() async {
 
               )
         )),
-      home:FirstPage(
-          camera:firstCamera),
+      home: AuthPage( camera:firstCamera),
     ),
   );
+}
+
+class AuthPage extends StatefulWidget {
+  const AuthPage({super.key,required this.camera});
+  final CameraDescription camera;
+
+  @override
+  _AuthPageState createState() => _AuthPageState(camera);
+  
+  
+}
+
+class _AuthPageState  extends State<AuthPage>{
+  _AuthPageState(CameraDescription camera);
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+   _signInAnonymously() async {
+    try {
+      UserCredential userCredential = await _auth.signInAnonymously();
+
+      print("User signed in: ${userCredential.user}");
+    } catch (e) {
+      print("Error signing in: $e");
+    }
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Scaffold(
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () async {
+            await _signInAnonymously();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder:(context)=>FirstPage(camera: widget.camera)
+              )
+            );
+          },
+            child:Text("Usar app sem criar conta"),
+
+
+
+        )
+      ),
+    );
+  }
 }
 
 class FirstPage extends StatelessWidget {
