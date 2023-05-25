@@ -36,6 +36,7 @@ dependencies:
   path:
   image_picker: ^0.8.4+2
   image_gallery_saver: ^1.7.1
+  permission_handler:
 
 
 
