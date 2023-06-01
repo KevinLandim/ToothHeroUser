@@ -12,7 +12,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pictureflutter/app/views/personaldata.dart';
-import 'package:pictureflutter/app/views/takepicturepage.dart';
+import 'package:pictureflutter/app/views/takepicturepagekid.dart';
 import 'package:pictureflutter/main.dart';
 
 
@@ -51,19 +51,19 @@ class DisplayPictureScreen extends StatelessWidget {
                       onPressed: (){
                         Navigator.push(
                             context,
-                            MaterialPageRoute(builder:(context)=>TakePictureScreen(
+                            MaterialPageRoute(builder:(context)=>TakePictureScreenKid(
                                 camera:camera ) )
                         );
                       }, child: Icon(Icons.camera_alt),
                     ),
                     FloatingActionButton(
                       onPressed: (){
-                        Navigator.push(
+                        /*Navigator.push(
                             context,
-                            MaterialPageRoute(builder:(context)=>DadosPessoais(imagePath: imagePath,
+                            MaterialPageRoute(builder:(context)=>PersonalData(,
 
                             ) )
-                        );
+                        );*/
                       }, child: Icon(Icons.navigate_next),
                     )
 

@@ -17,9 +17,18 @@ import '../../main.dart';
 import 'dentistlist.dart';
 
 
-class DadosPessoais extends StatelessWidget {
-  final String imagePath;
-  const DadosPessoais({super.key, required this.imagePath});
+class PersonalData extends StatefulWidget {
+  final List listOfImages;
+  const PersonalData({super.key, required this.listOfImages});
+
+  @override
+  State<StatefulWidget> createState() =>_PersonalDataState();
+
+}
+
+class _PersonalDataState extends State<PersonalData>{
+  double uploadProgress = 0.0;
+  bool  visibility=false;
 
   @override
   Widget build(BuildContext context) {
@@ -28,14 +37,16 @@ class DadosPessoais extends StatelessWidget {
     TextEditingController telefoneController = TextEditingController();
 
     Future<void> addEmergencia(String nome, String telefone,
-        String fullPath) async {
+        String imageKidPath,String imageDocPath,String imageBothPath) async {
       try {
         DocumentReference documentRef = await firestore.add({
           'nome': nome,
           'telefone': telefone,
           'datahora': DateTime.now().toString(),
           'status': 'aberta',
-          'fotos': fullPath,
+          'fotoCrianca': imageKidPath,
+          'fotoDoc':imageDocPath,
+          'fotoAmbos':imageBothPath
         });
 
         String documentId = documentRef.id;
@@ -54,22 +65,38 @@ class DadosPessoais extends StatelessWidget {
     }
 
 
-    Future<void> addImagem(String path) async {
+    Future<void> addImagem(List listOfImages) async {
       final storage = FirebaseStorage.instance;
-      File file = File(path);
+
       try {
-        String nome = 'img-${DateTime.now().toString()}.jpg';
-        await storage.ref('emergencias') //ref é a pasta
-            .child(nome) //child é o nome da foto
-            .putFile(file);
+        List<String> imagePaths = [];
+        for (int i = 0; i < listOfImages.length; i++) {
+          File file = File(listOfImages[i]);
+
+          String imageName = 'img-${DateTime.now().toString()}-$i.jpg';
+
+          UploadTask uploadTask= storage.ref('emergencias') // ref é a pasta
+              .child(imageName) // child é o nome da foto
+              .putFile(file);
+
+          uploadTask.snapshotEvents.listen((TaskSnapshot snapshot){
+            setState(() {
+              uploadProgress = snapshot.bytesTransferred.toDouble() / snapshot.totalBytes.toDouble();
+            });
+
+          });
+
+
+          await uploadTask;
+          imagePaths.add('emergencias/$imageName');
+        }
 
         await addEmergencia(
-            nomeController.text, telefoneController.text, "emergencias/$nome");
+            nomeController.text, telefoneController.text,imagePaths[0],imagePaths[1],imagePaths[2]);
       } on FirebaseException catch (e) {
         throw Exception('Erro no upload:${e.code}');
       }
     }
-
 
     return Scaffold(
       body: Container(
@@ -77,42 +104,76 @@ class DadosPessoais extends StatelessWidget {
         child:SingleChildScrollView(
 
           child: Column(
-            children: [
-              TextField(
-                controller: nomeController,
-                decoration: InputDecoration(
-                    labelText: 'Nome do responsável',
-                    border: OutlineInputBorder()
-                ),
+                children: [
+                  Text("Documentos a enviar:"),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children:
+                    widget.listOfImages.map((imagem) => Container(
+                        margin: EdgeInsets.only(right: 5,bottom: 5,top:5),
+                        width: 100,
+                        child: Image.file(File(imagem)))).toList()
+                    ,
+                  ),
+                  TextField(
+                    controller: nomeController,
+                    decoration: InputDecoration(
+                        labelText: 'Nome do responsável',
+                        border: OutlineInputBorder()
+                    ),
 
-              ),
-              TextField(
-                keyboardType: TextInputType.number,
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly
+                  ),
+                  TextField(
+                    keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
+                    controller: telefoneController,
+                    decoration: InputDecoration(
+                        labelText: 'Telefone',
+                        border: OutlineInputBorder()
+                    ),
+
+                  ),
+            if(visibility) // Só irá aparecer a barra de progresso das imagens quando o botão for clicado
+            Stack(
+              children: <Widget>[
+                SizedBox(
+                  height: 20.0,
+                  child: LinearProgressIndicator(
+                    value: uploadProgress,
+                  ),
+                ),
+                // Posiciona o texto no centro do LinearProgressIndicator.
+                Center(
+                  child: Text(
+                    'Enviando imagens ...',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+                  ElevatedButton(
+                    onPressed: () {
+                      addImagem(widget.listOfImages);
+                      setState(() {
+                        visibility=true;
+                      });
+                    },
+                    child: Text("Solicitar emergência!"),
+                  ),
                 ],
-                controller: telefoneController,
-                decoration: InputDecoration(
-                    labelText: 'Telefone',
-                    border: OutlineInputBorder()
-                ),
-
-              ),
-              Container(
-                  height: 300,
-                  child: Image.file(File(imagePath))),
-              ElevatedButton(
-                onPressed: () {
-                  addImagem(imagePath);
-                },
-                child: Text("Solicitar emergência!"),
               ),
 
-            ],
-          ),
         ),
       ),
 
     );
   }
+
+
+
 }

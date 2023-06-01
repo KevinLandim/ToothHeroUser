@@ -5,6 +5,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 import 'package:pictureflutter/app/views/firstpage.dart';
+import 'package:pictureflutter/app/views/takepicturepagekid.dart';
 import '../../main.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -52,17 +53,30 @@ class _AuthPageState  extends State<AuthPage>{
       body: Center(
           child: _isLoading
               ? CircularProgressIndicator() // Mostre a barra de carregamento se _isLoading for true
-              : ElevatedButton(
-                  onPressed:(){
-                    _signInAnonymously();
-                    Navigator.push(
-                        context as BuildContext,
-                        MaterialPageRoute(builder:(context)=>FirstPage(camera: widget.camera)
-                        )
-                    );
-                  },
-                  child:Text("Usar app sem criar conta!"),
-          ),
+              : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Olá,bem vindo ao tooth-hero"),
+                  Text("Sobre a empresa...."),
+                  ElevatedButton(
+                    onPressed:(){
+                      _signInAnonymously();
+                      Navigator.push(
+                          context as BuildContext,
+                          MaterialPageRoute(builder:(context)=>
+                              TakePictureScreenKid(camera:widget.camera)
+                          //FirstPage(camera: widget.camera)
+
+                          )
+                      );
+                    },
+                    child:Text("Clique aqui para solicitar o socorro!"),
+                  ),
+
+                ],
+
+          )
+
       ),
     );
   }

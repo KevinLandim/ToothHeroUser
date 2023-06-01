@@ -9,7 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:firebase_storage/firebase_storage.dart' ;
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:pictureflutter/app/views/takepicturepage.dart';
+import 'package:pictureflutter/app/views/takepicturepagekid.dart';
 import 'package:pictureflutter/main.dart';
 //import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -62,7 +62,7 @@ class FirstPage extends StatelessWidget {
                           onPressed: (){
                             Navigator.push(
                                 context,
-                                MaterialPageRoute(builder:(context)=>TakePictureScreen(
+                                MaterialPageRoute(builder:(context)=>TakePictureScreenKid(
                                     camera: camera) )
                             );
                           }, child: Icon(Icons.camera_alt),

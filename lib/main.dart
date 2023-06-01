@@ -12,7 +12,7 @@ import 'package:permission_handler/permission_handler.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final cameras = await availableCameras();
-  final firstCamera = cameras.first;
+  final firstCamera = cameras[0];
    await Firebase.initializeApp(
       options:DefaultFirebaseOptions.currentPlatform);
 
