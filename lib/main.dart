@@ -30,6 +30,9 @@ Future<void> main() async {
               )
         )),
       home: AuthPage(camera:firstCamera),
+      routes: {
+        '/AuthPageRoute':(context)=>AuthPage(camera:firstCamera)
+      },
     ),
   );
 }

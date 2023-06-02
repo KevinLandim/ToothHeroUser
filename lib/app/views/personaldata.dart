@@ -170,6 +170,18 @@ class _PersonalDataState extends State<PersonalData>{
 
         ),
       ),
+      floatingActionButton: Container(
+        margin: EdgeInsets.only(left:30),
+        child: Align(
+          alignment: Alignment.bottomLeft,
+          child: ElevatedButton(
+            onPressed: (){
+              Navigator.of(context).popAndPushNamed('/AuthPageRoute');
+            },
+            child: Text("Cancelar"),
+          ),
+        ),
+      ),
 
     );
   }

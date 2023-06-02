@@ -14,6 +14,7 @@ import 'package:pictureflutter/main.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'authpage.dart';
 import 'displaypicturepage.dart';
 
 
@@ -62,26 +63,32 @@ class TakePictureScreenKidState extends State<TakePictureScreenKid> {
     super.dispose();
   }
   TakePhoto() async {
-    // Tira a foto em um bloco try/catch. Se algo der errado,o erro é pego.
-    try {
-      // Certifique que a câmera foi inicializada.
-      await _initializeControllerFuture;
-      //  tentativa de tirar a foto e pegar o arquivo 'image' onde ele foi salvo
-      final image = await _controller.takePicture();
+    if(imagePath!=null){//verifica se a foto já foi tirada,para não tirar foto sem preview
+      ScaffoldMessenger.of(this.context).showSnackBar(
+        SnackBar(content:Text("Para nova foto,clique em repetir foto!"))
+      );
+    }else {
+      // Tira a foto em um bloco try/catch. Se algo der errado,o erro é pego.
       try {
-        final savedImage = await ImageGallerySaver.saveFile(image.path);
-        setState(() {
-          imagePath = image.path; // Atualiza o ImagePath com nova imagem
-        });
-        setState(() {
-          listOfImages!.add(image.path);//adiciona a foto tirada a lista
-        });
-      } catch(e){
-        print("Ocorreu um erro ao salvar imagem: ${e}");
+        // Certifique que a câmera foi inicializada.
+        await _initializeControllerFuture;
+        //  tentativa de tirar a foto e pegar o arquivo 'image' onde ele foi salvo
+        final image = await _controller.takePicture();
+        try {
+          final savedImage = await ImageGallerySaver.saveFile(image.path);
+          setState(() {
+            imagePath = image.path; // Atualiza o ImagePath com nova imagem
+          });
+          setState(() {
+            listOfImages!.add(image.path); //adiciona a foto tirada a lista
+          });
+        } catch (e) {
+          print("Ocorreu um erro ao salvar imagem: ${e}");
+        }
+        if (!mounted) return;
+      } catch (e) {
+        print(e);
       }
-      if (!mounted) return;
-    } catch (e) {
-      print(e);
     }
   }
   TextButton CreateButtons(String name, VoidCallback function,IconData icon){
@@ -100,55 +107,78 @@ class TakePictureScreenKidState extends State<TakePictureScreenKid> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Take a picture')),
-      // You must wait until the controller is initialized before displaying the
-      // camera preview. Use a FutureBuilder to display a loading spinner until the
-      // controller has finished initializing.
-      body: FutureBuilder<void>(
-        future: _initializeControllerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            // If the Future is complete, display the preview.
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text('Fotografe a boca/região acidentada da criança:'),
-                  Container(
-                     height: 300.0,
-                      child: imagePath!= null
-                      ?Image.file(File(imagePath!))
-                      :CameraPreview(_controller)),
-                  CreateButtons("Tirar foto",TakePhoto, Icons.camera_alt),//botão 1
-                  CreateButtons("Repetir foto", () {                      //botão 2
-                    setState(() {
-                      imagePath=null; //Botão de repetir foto, torna o imagePath nulo
-                    });
-                  }, Icons.refresh),
-                  CreateButtons("Avançar", () {
-                    if(imagePath!=null){
-                    Navigator.push(
-                      context as BuildContext,
-                      MaterialPageRoute(builder:(context)=>TakePictureScreenDoc(camera:widget.camera,listOfImages:listOfImages)));
-                    }else{ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content:Text("Tire a foto antes de prosseguir")
-                        )
-                    );}
-                  }, Icons.double_arrow_sharp) //botão 3
+    return WillPopScope(
+      onWillPop: ()async{
+        await ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content:Text("Você não pode voltar, apenas cancelar!")));
+        return false;
+      },
+      child: Scaffold(
+        // You must wait until the controller is initialized before displaying the
+        // camera preview. Use a FutureBuilder to display a loading spinner until the
+        // controller has finished initializing.
+        body: FutureBuilder<void>(
+          future: _initializeControllerFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              // If the Future is complete, display the preview.
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment:CrossAxisAlignment.center,
+                  children: [
+                    Text('Fotografe a boca/região acidentada da criança:'),
+                    Container(
+                       height: 300.0,
+                        child: imagePath!= null
+                        ?Image.file(File(imagePath!))
+                        :CameraPreview(_controller)),
+                    CreateButtons("Tirar foto",TakePhoto, Icons.camera_alt),//botão 1
+                    CreateButtons("Repetir foto", () {
+                      setState(() {
+                        listOfImages.removeLast();
 
-                ],
-              ),
+                      });//botão 2
+                      setState(() {
+                        imagePath=null; //Botão de repetir foto, torna o imagePath nulo
+                      });
+                    }, Icons.refresh),
+                    CreateButtons("Avançar", () {
+                      if(imagePath!=null){
+                      Navigator.push(
+                        context as BuildContext,
+                        MaterialPageRoute(builder:(context)=>TakePictureScreenDoc(camera:widget.camera,listOfImages:listOfImages)));
+                      }else{ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content:Text("Tire a foto antes de prosseguir")
+                          )
+                      );}
+                    }, Icons.double_arrow_sharp) //botão 3
 
-            );
-          } else {
-            // Otherwise, display a loading indicator.
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
+                  ],
+                ),
+
+              );
+            } else {
+              // Otherwise, display a loading indicator.
+              return const Center(child: CircularProgressIndicator());
+            }
+          },
+        ),
+        floatingActionButton: Container(
+          margin: EdgeInsets.only(left:30),
+          child: Align(
+            alignment: Alignment.bottomLeft,
+            child: ElevatedButton(
+              onPressed: (){
+                Navigator.of(context).popAndPushNamed('/AuthPageRoute');
+                },
+              child: Text("Cancelar"),
+            ),
+          ),
+        ),
+
       ),
-
     );
   }
 }

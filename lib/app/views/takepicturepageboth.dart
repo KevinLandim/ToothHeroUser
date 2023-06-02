@@ -63,6 +63,7 @@ class TakePictureScreenBothState extends State<TakePictureScreenBoth> {
     _controller.dispose();
     super.dispose();
   }
+
   TakePhoto() async {
     // Tira a foto em um bloco try/catch. Se algo der errado,o erro é pego.
     try {
@@ -73,19 +74,20 @@ class TakePictureScreenBothState extends State<TakePictureScreenBoth> {
       try {
         final savedImage = await ImageGallerySaver.saveFile(image.path);
         setState(() {
-          imagePath = image.path; // Atualiza o ImagePath com nova imagem
-
+          imagePath = image.path;// Atualiza o ImagePath com nova imagem
         });
         setState(() {
           widget.listOfImages.add(image.path);
-        });
+        });;
       } catch(e){
         print("Ocorreu um erro ao salvar imagem: ${e}");
       }
       if (!mounted) return;
+
     } catch (e) {
       print(e);
     }
+
   }
   TextButton CreateButtons(String name, VoidCallback function,IconData icon){
     return TextButton(
@@ -103,55 +105,79 @@ class TakePictureScreenBothState extends State<TakePictureScreenBoth> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Take a picture')),
-      // You must wait until the controller is initialized before displaying the
-      // camera preview. Use a FutureBuilder to display a loading spinner until the
-      // controller has finished initializing.
-      body: FutureBuilder<void>(
-        future: _initializeControllerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            // If the Future is complete, display the preview.
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text('Foto do responsável com a criança:'),
-                  Container(
-                      height: 300.0,
-                      child: imagePath!= null
-                          ?Image.file(File(imagePath!))
-                          :CameraPreview(_controller)),
-                  CreateButtons("Tirar foto",TakePhoto, Icons.camera_alt),//botão 1
-                  CreateButtons("Repetir foto", () {                      //botão 2
-                    setState(() {
-                      imagePath=null; //Botão de repetir foto, torna o imagePath nulo
-                    });
-                  }, Icons.refresh),
-                  CreateButtons("Avançar", () {
-                    if(imagePath!=null){
-                      Navigator.push(
-                          context as BuildContext,
-                          MaterialPageRoute(builder:(context)=>PersonalData(listOfImages:widget.listOfImages)));
-                    }else{ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content:Text("Tire a foto antes de prosseguir")
-                        )
-                    );}
-                  }, Icons.double_arrow_sharp) //botão 3
+    return WillPopScope(
+      onWillPop: ()async{
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content:Text("Você não pode retroceder,apenas cancelar!")
+          )
+        );
+        return false;
+      },
 
-                ],
-              ),
+      child: Scaffold(
+        // You must wait until the controller is initialized before displaying the
+        // camera preview. Use a FutureBuilder to display a loading spinner until the
+        // controller has finished initializing.
+        body: FutureBuilder<void>(
+          future: _initializeControllerFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              // If the Future is complete, display the preview.
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Foto do responsável com a criança:'),
+                    Container(
+                        height: 300.0,
+                        child: imagePath!= null
+                            ?Image.file(File(imagePath!))
+                            :CameraPreview(_controller)),
+                    CreateButtons("Tirar foto",TakePhoto, Icons.camera_alt),//botão 1
+                    CreateButtons("Repetir foto", () {
+                      setState(() {
+                        widget.listOfImages.removeLast(); // problema:se a usuario clicar mais de uma vez no 'repetir' apaga a foto da tela anterior
 
-            );
-          } else {
-            // Otherwise, display a loading indicator.
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
+                      });//botão 2
+                      setState(() {
+                        imagePath=null; //Botão de repetir foto, torna o imagePath nulo
+                      });
+                    }, Icons.refresh),
+                    CreateButtons("Avançar", () {
+                      if(imagePath!=null){
+                        Navigator.push(
+                            context as BuildContext,
+                            MaterialPageRoute(builder:(context)=>PersonalData(listOfImages:widget.listOfImages)));
+                      }else{ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content:Text("Tire a foto antes de prosseguir")
+                          )
+                      );}
+                    }, Icons.double_arrow_sharp) //botão 3
+
+                  ],
+                ),
+
+              );
+            } else {
+              // Otherwise, display a loading indicator.
+              return const Center(child: CircularProgressIndicator());
+            }
+          },
+        ),
+        floatingActionButton: Container(
+          margin:EdgeInsets.only(left:30),
+          child: Align(
+            alignment: Alignment.bottomLeft,
+            child: ElevatedButton(
+              onPressed:(){  Navigator.of(context).popAndPushNamed('/AuthPageRoute');},
+              child: Text("Cancelar"),
+            ),
+          ),
+        ),
+
       ),
-
     );
   }
 }
