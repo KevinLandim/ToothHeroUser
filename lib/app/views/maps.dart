@@ -4,49 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
-import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:path/path.dart';
 
-/*
-class MapPage extends StatefulWidget {
-  @override
-  _MapPageState createState() => _MapPageState();
-}
-class _MapPageState extends State<MapPage> {
-  late GoogleMapController mapController;
-  final LatLng _center = const LatLng(45.521563, -122.677433);
-  bool _isMapReady = false;  // nova variável para verificar se o mapa está pronto
-
-  void _onMapCreated(GoogleMapController controller){
-    mapController = controller;
-    setState(() {
-      _isMapReady = true;  // defina _isMapReady como true quando o mapa estiver pronto
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    if (_isMapReady) {  // apenas descarte o controlador se o mapa estiver pronto
-      mapController?.dispose();
-    }
-
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('google ma')),
-      body: GoogleMap(
-          initialCameraPosition: CameraPosition(target: _center, zoom: 11.0),
-          onMapCreated: _onMapCreated
-      ),
-    );
-  }
-}
-
-*/
 class MapPage extends StatefulWidget {
   @override
   _MapPageState createState() => _MapPageState();
