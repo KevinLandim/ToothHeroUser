@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:camera/camera.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'app/views/maps.dart';
 import 'firebase_options.dart';
 import 'app/views/authpage.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -29,7 +30,7 @@ Future<void> main() async {
 
               )
         )),
-      home: AuthPage(camera:firstCamera),
+      home:AuthPage(camera:firstCamera),
       routes: {
         '/AuthPageRoute':(context)=>AuthPage(camera:firstCamera)
       },

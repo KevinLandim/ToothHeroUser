@@ -68,7 +68,6 @@ class _DentisListState extends State<DentisList> {
       child: Scaffold(
         appBar: AppBar(title: Text('Dentistas disponíveis')),
         body: Center(
-                child: Expanded(
                   child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance.collection('atendimentos')
                         .where('status', isEqualTo: "Aceito")
@@ -141,7 +140,7 @@ class _DentisListState extends State<DentisList> {
                       }
                     },
                   ),
-                )
+
             ),
 
 
