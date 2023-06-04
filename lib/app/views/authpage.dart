@@ -7,7 +7,6 @@ import 'package:pictureflutter/app/views/takepicturepagekid.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 
-
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key,required this.camera});
   final CameraDescription camera;

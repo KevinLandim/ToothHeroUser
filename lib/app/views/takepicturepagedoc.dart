@@ -1,22 +1,9 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:camera/camera.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:firebase_storage/firebase_storage.dart' ;
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:pictureflutter/app/views/authpage.dart';
 import 'package:pictureflutter/app/views/takepicturepageboth.dart';
-import 'package:pictureflutter/main.dart';
-
-import 'package:firebase_auth/firebase_auth.dart';
-
-import 'displaypicturepage.dart';
-
 
 
 
@@ -142,9 +129,10 @@ class TakePictureScreenDocState extends State<TakePictureScreenDoc> {
                             :CameraPreview(_controller)),
                     CreateButtons("Tirar foto",TakePhoto, Icons.camera_alt),
                     CreateButtons("Repetir foto", () {
-                      setState(() {
-                        widget.listOfImages.removeLast();
-                      });
+                      if(imagePath!=null){//O botão de repetir foto não faz nada se a tela estiver exibindo o preview
+                        setState(() {
+                          widget.listOfImages.removeLast();
+                        });}//botão 2
                       setState(() {
                         imagePath=null; //Botão de repetir foto, torna o imagePath nulo
                       });

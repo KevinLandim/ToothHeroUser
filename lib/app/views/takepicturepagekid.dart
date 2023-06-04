@@ -40,7 +40,6 @@ class TakePictureScreenKidState extends State<TakePictureScreenKid> {
       // Define the resolution to use.
       ResolutionPreset.medium,
     );
-
     // Next, initialize the controller. This returns a Future.
     _initializeControllerFuture = _controller.initialize();
   }
@@ -124,10 +123,10 @@ class TakePictureScreenKidState extends State<TakePictureScreenKid> {
                         :CameraPreview(_controller)),
                     CreateButtons("Tirar foto",TakePhoto, Icons.camera_alt),//botão 1
                     CreateButtons("Repetir foto", () {
+                      if(imagePath!=null){//O botão de repetir foto não faz nada se a tela estiver exibindo o preview
                       setState(() {
                         listOfImages.removeLast();
-
-                      });//botão 2
+                      });}//botão 2
                       setState(() {
                         imagePath=null; //Botão de repetir foto, torna o imagePath nulo
                       });

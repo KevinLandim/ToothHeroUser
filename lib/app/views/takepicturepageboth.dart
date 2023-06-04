@@ -123,10 +123,10 @@ class TakePictureScreenBothState extends State<TakePictureScreenBoth> {
                             :CameraPreview(_controller)),
                     CreateButtons("Tirar foto",TakePhoto, Icons.camera_alt),//botão 1
                     CreateButtons("Repetir foto", () {
-                      setState(() {
-                        widget.listOfImages.removeLast(); // problema:se a usuario clicar mais de uma vez no 'repetir' apaga a foto da tela anterior
-
-                      });//botão 2
+                      if(imagePath!=null){//O botão de repetir foto não faz nada se a tela estiver exibindo o preview
+                        setState(() {
+                          widget.listOfImages.removeLast();
+                        });}
                       setState(() {
                         imagePath=null; //Botão de repetir foto, torna o imagePath nulo
                       });
