@@ -27,7 +27,6 @@ Future<void> main() async {
         elevatedButtonTheme: ElevatedButtonThemeData(
               style: ButtonStyle(
                   backgroundColor:MaterialStateProperty.all<Color>(Colors.blue)
-
               )
         )),
       home:AuthPage(camera:firstCamera),

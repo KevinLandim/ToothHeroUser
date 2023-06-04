@@ -19,8 +19,9 @@ import 'maps.dart';
 class DentisList extends StatefulWidget{
 
   final String documentId;
+  final String telefone;
 
-  const DentisList({super.key, required this.documentId});
+  const DentisList({super.key, required this.documentId, required this.telefone});
 
   @override
   State<DentisList> createState() => _DentisListState();
@@ -51,6 +52,22 @@ class _DentisListState extends State<DentisList> {
 
     }
   }
+  Future<void>SendCallNotification(String emergenciaId, String profissionalId) async{
+    try {
+
+      CollectionReference callCollection= FirebaseFirestore.instance.collection('ligação');
+
+      DocumentReference DocRef= await callCollection.add({
+        "emergenciaId": emergenciaId,
+        'profissionalId':profissionalId,
+        'telefoneSocorrista':widget.telefone
+      });
+    }catch(e){
+      print('Erro ao atualizar status do documento:$e');
+
+    }
+  }
+
 
 
 
@@ -105,6 +122,7 @@ class _DentisListState extends State<DentisList> {
                                   //icon: Icon(Icons.phone),
                                   onPressed:(){
                                     updateStatus(widget.documentId);
+                                    SendCallNotification(data['emergenciaId'],data['profissionalId']);
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text('Você aceitou este dentista. \n'

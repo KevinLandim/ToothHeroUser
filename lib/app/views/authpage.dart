@@ -1,13 +1,9 @@
-import 'dart:async';
-import 'dart:io';
+
 import 'package:camera/camera.dart';
-
 import 'package:flutter/material.dart';
-
-import 'package:pictureflutter/app/views/firstpage.dart';
+import 'package:location/location.dart';
+import 'package:permission_handler/permission_handler.dart' as ph;
 import 'package:pictureflutter/app/views/takepicturepagekid.dart';
-import '../../main.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
 
 
@@ -25,6 +21,8 @@ class _AuthPageState  extends State<AuthPage>{
   _AuthPageState(CameraDescription camera);
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _isLoading = false;
+
+
 
   _signInAnonymously() async {
     setState(() {
@@ -46,6 +44,56 @@ class _AuthPageState  extends State<AuthPage>{
 
   }
 
+  requestStoragePermission() async{ //Pedir para o usuário permitir o uso da memoria
+    //ph é a biblioteca de gerenciar permissões
+    var status=await ph.Permission.storage.status;
+    if(status.isDenied){
+      await ph.Permission.storage.request();
+    }
+  }
+
+  requestLocationPermission()async{
+    Location location = new Location();
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+
+    //verifica se a localização do dispositivo está ativada
+    //se estiver,retorna 'true',se não,'false'
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();//pede ao usuário para ativar com pop-up
+      if (!_serviceEnabled) {//se o usuário recusar o pedido, o programa só retorna nada para sair do if
+        ScaffoldMessenger.of(this.context).showSnackBar(
+            SnackBar(content: Text("Você precisa ativar a localização!"))
+        );
+        _serviceEnabled = await location.requestService();
+
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();//verifica se a permissão de localização está habilitada
+    if (_permissionGranted == PermissionStatus.denied) {//manda um pop-pup para ativar se não estiver
+      _permissionGranted = await location.requestPermission();
+      while(_permissionGranted != PermissionStatus.granted) {
+        ScaffoldMessenger.of(this.context).showSnackBar(
+            SnackBar(content: Text("Você precisa permitir o uso a localização!"))
+        );
+         _permissionGranted= await location.requestPermission();
+
+      }
+    }
+  }
+  requestCameraPermission()async{
+    ph.PermissionStatus status= await ph.Permission.camera.status;
+    while(!status.isGranted){
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Você precisa permitir o uso da câmera"))
+      );
+      status= await ph.Permission.camera.request();
+    }
+
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -59,16 +107,20 @@ class _AuthPageState  extends State<AuthPage>{
                   Text("Olá,bem vindo ao tooth-hero"),
                   Text("Sobre a empresa...."),
                   ElevatedButton(
-                    onPressed:(){
-                      _signInAnonymously();
+                    onPressed:()async{
+                       await requestCameraPermission();
+                       await requestStoragePermission();
+                       await requestLocationPermission();
+                        _signInAnonymously();
                       Navigator.push(
                           context as BuildContext,
                           MaterialPageRoute(builder:(context)=>
                               TakePictureScreenKid(camera:widget.camera)
                           //FirstPage(camera: widget.camera)
-
                           )
                       );
+
+
                     },
                     child:Text("Clique aqui para solicitar o socorro!"),
                   ),

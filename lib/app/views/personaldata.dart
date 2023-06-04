@@ -1,34 +1,64 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/services.dart';
-
-import 'package:camera/camera.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:location/location.dart';
 import 'package:firebase_storage/firebase_storage.dart' ;
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../../main.dart';
-import 'dentistlist.dart';
 
+import 'dentistlist.dart';
 
 class PersonalData extends StatefulWidget {
   final List listOfImages;
-  const PersonalData({super.key, required this.listOfImages});
-
+  const PersonalData({super.key,required this.listOfImages});
   @override
   State<StatefulWidget> createState() =>_PersonalDataState();
-
 }
 
 class _PersonalDataState extends State<PersonalData>{
+
   double uploadProgress = 0.0;
   bool  visibility=false;
+
+  getCoordinates(String coordinates) async{ //Esta função verifica se a localização foi permitita e se está ativa,e envia coordenadas
+    Location location = new Location();
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+    LocationData _locationData;
+
+    //verifica se a localização do dispositivo está ativada
+    //se estiver,retorna 'true',se não,'false'
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();//pede ao usuário para ativar com pop-up
+      if (!_serviceEnabled) {//se o usuário recusar o pedido, o programa só retorna nada para sair do if
+        ScaffoldMessenger.of(this.context).showSnackBar(
+          SnackBar(content: Text("Você precisa ativar a localização!"))
+        );
+        _serviceEnabled = await location.requestService();
+
+      }
+    }
+    _permissionGranted = await location.hasPermission();//verifica se a permissão de localização está habilitada
+    if (_permissionGranted == PermissionStatus.denied) {//manda um pop-pup para ativar se não estiver
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        ScaffoldMessenger.of(this.context).showSnackBar(
+            SnackBar(content: Text("Você precisa permitir o uso a localização!"))
+        );
+        await location.requestPermission();
+
+      }
+    }
+
+    _locationData = await location.getLocation();
+    if(coordinates=='latitude'){return _locationData.latitude; }
+    if(coordinates=='longitude'){return _locationData.longitude;}
+    print("Longitude:${_locationData.longitude.toString()}e  latitude:${_locationData.latitude.toString()}");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +76,9 @@ class _PersonalDataState extends State<PersonalData>{
           'status': 'aberta',
           'fotoCrianca': imageKidPath,
           'fotoDoc':imageDocPath,
-          'fotoAmbos':imageBothPath
+          'fotoAmbos':imageBothPath,
+          'latitude': await getCoordinates('latitude'),
+          'longitude': await  getCoordinates('longitude')
         });
 
         String documentId = documentRef.id;
@@ -57,7 +89,7 @@ class _PersonalDataState extends State<PersonalData>{
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => DentisList(documentId: documentId)),
+              builder: (context) => DentisList(documentId: documentId,telefone:telefone)),
         );
       } catch (e) {
         print('Error adding emergencia: $e');
