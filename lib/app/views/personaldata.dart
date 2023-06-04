@@ -89,7 +89,7 @@ class _PersonalDataState extends State<PersonalData>{
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => DentisList(documentId: documentId,telefone:telefone)),
+              builder: (context) => DentisList(documentId: documentId,telefone:telefone,nomeSocorrista:nome)),
         );
       } catch (e) {
         print('Error adding emergencia: $e');
@@ -190,6 +190,7 @@ class _PersonalDataState extends State<PersonalData>{
 
                   ElevatedButton(
                     onPressed: () {
+                      FocusScope.of(context).unfocus();//Tira o foco do widget que tem foco(no caso, fecha o teclado)
                       addImagem(widget.listOfImages);
                       setState(() {
                         visibility=true;

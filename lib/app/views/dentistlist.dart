@@ -20,8 +20,9 @@ class DentisList extends StatefulWidget{
 
   final String documentId;
   final String telefone;
+  final String nomeSocorrista;
 
-  const DentisList({super.key, required this.documentId, required this.telefone});
+  const DentisList({super.key, required this.documentId, required this.telefone, required this.nomeSocorrista});
 
   @override
   State<DentisList> createState() => _DentisListState();
@@ -52,18 +53,20 @@ class _DentisListState extends State<DentisList> {
 
     }
   }
-  Future<void>SendCallNotification(String emergenciaId, String profissionalId) async{
+  Future<void>SendCallNotification(String emergenciaId, String profissionalId,String nomeProfissional,String nomeSocorrista) async{
     try {
-
+      var horarioEscolha =DateTime.now().toString();
       CollectionReference callCollection= FirebaseFirestore.instance.collection('ligação');
-
       DocumentReference DocRef= await callCollection.add({
         "emergenciaId": emergenciaId,
         'profissionalId':profissionalId,
-        'telefoneSocorrista':widget.telefone
+        'nomeProfissional':nomeProfissional,
+        'nomeSocorrista':nomeSocorrista,
+        'telefoneSocorrista':widget.telefone,
+        'horarioEscolha':horarioEscolha
       });
     }catch(e){
-      print('Erro ao atualizar status do documento:$e');
+      print('Erro ao notficar o dentista:$e');
 
     }
   }
@@ -94,13 +97,11 @@ class _DentisListState extends State<DentisList> {
                       if (snapshot.hasError) {
                         return Text('Algo deu errado');
                       }
-
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return CircularProgressIndicator(
                           strokeWidth: 2.0,
                         );
                       }
-
                       // Verifica se há dados antes de acessar 'docs'
                       if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
                         return ListView(
@@ -122,7 +123,7 @@ class _DentisListState extends State<DentisList> {
                                   //icon: Icon(Icons.phone),
                                   onPressed:(){
                                     updateStatus(widget.documentId);
-                                    SendCallNotification(data['emergenciaId'],data['profissionalId']);
+                                    SendCallNotification(data['emergenciaId'],data['profissionalId'],data['nome'],widget.nomeSocorrista);
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text('Você aceitou este dentista. \n'
