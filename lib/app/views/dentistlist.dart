@@ -18,21 +18,19 @@ class DentisList extends StatefulWidget{
 }
 
 class _DentisListState extends State<DentisList> {
-  Future<void> updateStatus(String documentId) async {
+  Future<void> emergenciaFechadaUpdate(String documentId) async {
     try {
       CollectionReference emergenciasCollection =
       FirebaseFirestore.instance.collection('emergencias');
-
       await emergenciasCollection.doc(documentId).update({
         'status': 'fechada',
       });
-
       print('Documento atualizado.');
     } catch (e) {
       print('Erro ao atualizar status do documento:$e');
     }
   }
-  Future<void>updateStatusCancel(String documentId) async{
+  Future<void>emergenciaCanceladaUpdate(String documentId) async{
     try {
       CollectionReference emergenciasCollection =
           FirebaseFirestore.instance.collection('emergencias');
@@ -42,22 +40,16 @@ class _DentisListState extends State<DentisList> {
 
     }
   }
-  Future<void>SendCallNotification(String emergenciaId, String profissionalId,String nomeProfissional,String nomeSocorrista) async{
+  Future<void>SendCallNotification (String documentId) async{
     try {
-      var horarioEscolha =DateTime.now().toString();
-      CollectionReference callCollection= FirebaseFirestore.instance.collection('ligação');
-      DocumentReference DocRef= await callCollection.add({
-        "emergenciaId": emergenciaId,
-        'profissionalId':profissionalId,
-        'nomeProfissional':nomeProfissional,
-        'nomeSocorrista':nomeSocorrista,
-        'telefoneSocorrista':widget.telefone,
-        'horarioEscolha':horarioEscolha
-      });
+      CollectionReference atendimentosCollection = FirebaseFirestore.instance.collection('atendimentos');
+      atendimentosCollection.doc(documentId).update({'status':'em andamento'});
+
     }catch(e){
-      print('Erro ao notficar o dentista:$e');
+      print('Erro ao atualizar status do documento:$e');
 
     }
+
   }
 
 
@@ -94,6 +86,8 @@ class _DentisListState extends State<DentisList> {
                       // Verifica se há dados antes de acessar 'docs'
                       if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
                         return ListView(
+                          //map é um método que executa uma determinada função para cada elemento da lista
+                          //no caso, uma lista de snapshots, que são  documentos recuperados do firestore
                           children: snapshot.data!.docs.map((DocumentSnapshot document) {
                             Map <String, dynamic> data = document.data() as Map<String, dynamic>;
 
@@ -111,8 +105,9 @@ class _DentisListState extends State<DentisList> {
                                   child:Text("Escolher"),
                                   //icon: Icon(Icons.phone),
                                   onPressed:(){
-                                    updateStatus(widget.documentId);
-                                    SendCallNotification(data['emergenciaId'],data['profissionalId'],data['nome'],widget.nomeSocorrista);
+                                    print('data:${data}');
+                                    emergenciaFechadaUpdate(widget.documentId);
+                                    SendCallNotification(document.id);
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text('Você aceitou este dentista. \n'
@@ -159,7 +154,8 @@ class _DentisListState extends State<DentisList> {
             child: ElevatedButton(
               onPressed: (){
                 Navigator.of(context).popAndPushNamed('/AuthPageRoute');
-                updateStatusCancel(widget.documentId);
+                emergenciaCanceladaUpdate(widget.documentId);
+
               },
               child: Text("Cancelar"),
             ),
