@@ -21,7 +21,7 @@ class _PersonalDataState extends State<PersonalData>{
   double uploadProgress = 0.0;
   bool  visibility=false;
 
-  getCoordinates(String coordinates) async{ //Esta função verifica se a localização foi permitita e se está ativa,e envia coordenadas
+   getCoordinates(String coordinates) async{ //Esta função verifica se a localização foi permitita e se está ativa,e envia coordenadas
     Location location = new Location();
     bool _serviceEnabled;
     PermissionStatus _permissionGranted;
@@ -84,11 +84,29 @@ class _PersonalDataState extends State<PersonalData>{
           SnackBar(content: Text('Emergência aberta!')),
         );
 
-        Navigator.push(
+        Future<void> navigateToDentistList() async {
+          double lat = await getCoordinates('latitude');
+          double long = await getCoordinates('longitude');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => DentisList(
+                idDocEmergencia: documentId,
+                latSocorrista: lat,
+                longSocorrista: long,
+              ),
+            ),
+          );
+        }
+        navigateToDentistList();
+
+        /*Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => DentisList(documentId: documentId,telefone:telefone,nomeSocorrista:nome)),
-        );
+              builder: (context)  => DentisList(documentId: documentId,
+                latSocorrista:  getCoordinates('latitude'),
+                longSocorrista: getCoordinates('longitude'),))
+        );*/
       } catch (e) {
         print('Error adding emergencia: $e');
       }
@@ -115,8 +133,6 @@ class _PersonalDataState extends State<PersonalData>{
             });
 
           });
-
-
           await uploadTask;
           imagePaths.add('emergencias/$imageName');
         }

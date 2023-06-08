@@ -1,16 +1,29 @@
 
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'dart:async';
+
+import 'package:pictureflutter/app/views/dentistlist.dart';
+
 
 
 class MapPage extends StatefulWidget {
+  final String idDocEmergencia;
+  final double latSocorrista;
+  final double longSocorrista;
+  MapPage({required this.idDocEmergencia, required this.latSocorrista, required this.longSocorrista});
   @override
   _MapPageState createState() => _MapPageState();
 }
 
 class _MapPageState extends State<MapPage> {
+  Timer? _timer;
+  bool _isTimeOver = false;
+
+
   late GoogleMapController mapController;
   late LocationData currentLocation;
   late Location location;
@@ -26,6 +39,16 @@ class _MapPageState extends State<MapPage> {
       updatePinOnMap();
     });
     location.enableBackgroundMode(enable: true);
+
+    void _startTimer() {
+      _isTimeOver = false;
+      _timer = Timer(Duration(minutes: 1), () {
+        setState(() {
+          _isTimeOver = true;
+        });
+      });
+    }
+    _startTimer();
 
   }
 
@@ -54,6 +77,15 @@ class _MapPageState extends State<MapPage> {
       mapController.dispose();
     }
   }
+  void reOpenEmergenceAgain(){
+    CollectionReference firestore = FirebaseFirestore.instance.collection('emergencias');
+    firestore.doc(widget.idDocEmergencia).update({'status':'aberta'});
+
+    Navigator.push(context,MaterialPageRoute(builder: (context)=>
+        DentisList(idDocEmergencia: widget.idDocEmergencia,
+            latSocorrista: widget.latSocorrista,
+            longSocorrista: widget.longSocorrista)));
+  }
 
 
   @override
@@ -75,10 +107,16 @@ class _MapPageState extends State<MapPage> {
             ),
             Text('Para abrir o Maps e visualizar a rota'
                 ' até a localização do dentista, clique no Pino vermelho,e depois no Icone do maps'),
+            Text("Se o dentista não te ligar em até um minuto por favor, clique no botão abaixo"),
             ElevatedButton(
-                onPressed: null,
+                onPressed: (){
+                 if(!_isTimeOver){
+                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Por favor aguarde!')));
+                 }else{reOpenEmergenceAgain();}
+
+                },
                 child: Text(
-                    "Enviar localização e confirmar",
+                    "Buscar outro profissional",
                         style:TextStyle(color:Colors.white)
                 ))
           ],
