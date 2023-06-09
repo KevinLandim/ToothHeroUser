@@ -47,7 +47,7 @@ class _MapPageState extends State<MapPage> {
 
     void _startTimer() {
       _isTimeOver = false;
-      _timer = Timer(Duration(minutes:1 ), () {
+      _timer = Timer(Duration(seconds:20), () {
         setState(() {
           _isTimeOver = true;
         });

@@ -12,6 +12,7 @@ class DentisList extends StatefulWidget{
   final String idDocEmergencia;
   final double latSocorrista;
   final double longSocorrista;
+  static String profissionalId='';
 
 
   const DentisList({super.key, required this.idDocEmergencia,required this.latSocorrista,required this.longSocorrista});
@@ -94,7 +95,8 @@ class _DentisListState extends State<DentisList> {
                   child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance.collection('atendimentos')//stream é a fonte contínua de dados
                         .where('status', isEqualTo: "Aceito")
-                        .where('emergenciaId',isEqualTo: '${widget.idDocEmergencia}')
+                        .where('emergenciaId', isEqualTo: "${widget.idDocEmergencia}")
+                       // .where('nome', isEqualTo: 'x')
                         .snapshots(),
                     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {//sempre que um valor novo é emitido pelo stream,o builder atualiza
                       if (snapshot.hasError) {
@@ -113,12 +115,15 @@ class _DentisListState extends State<DentisList> {
                           children: snapshot.data!.docs.map((DocumentSnapshot document) {
                             Map <String, dynamic> data = document.data() as Map<String, dynamic>;
 
+
                             double distanceInKm = calculateDistance(
                                 double.parse(data['latitude']),
                                 double.parse(data['longitude']),
                                 widget.latSocorrista,
                                 widget.longSocorrista,
                             );
+
+
                             if (distanceInKm.round() <20) {
                               return Container(
                                 decoration: BoxDecoration(
@@ -156,6 +161,7 @@ class _DentisListState extends State<DentisList> {
                                                     latDentista:double.parse(data['latitude']),
                                                     longDentista:double.parse(data['longitude'])
                                                       )));
+                                            setState(() {DentisList.profissionalId=data['profissionalId'];});
                                           },
                                         ),
                                       ],

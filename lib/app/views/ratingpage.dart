@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:pictureflutter/app/views/dentistlist.dart';
 import 'package:pictureflutter/app/views/personaldata.dart';
 
 
@@ -194,6 +195,7 @@ class _RatingPageState extends State<RatingPage>{
           'comentario': comentarioDentista,
           'datahora': datahora,
           'nomesocorrista': PersonalData.nomeSocorrista,
+          'profissionalId':DentisList.profissionalId
         });
       }catch(e){print('Erro ao enviar avaliações');}
     }
