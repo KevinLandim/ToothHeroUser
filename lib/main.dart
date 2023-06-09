@@ -2,10 +2,13 @@ import 'dart:async';
 import 'package:camera/camera.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:pictureflutter/app/views/ratingpage.dart';
 import 'app/views/maps.dart';
 import 'firebase_options.dart';
 import 'app/views/authpage.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+
 
 
 
@@ -16,6 +19,8 @@ Future<void> main() async {
   final firstCamera = cameras[0];
    await Firebase.initializeApp(
       options:DefaultFirebaseOptions.currentPlatform);
+
+
 
   runApp(
     MaterialApp(
@@ -29,7 +34,7 @@ Future<void> main() async {
                   backgroundColor:MaterialStateProperty.all<Color>(Colors.blue)
               )
         )),
-      home:AuthPage(camera:firstCamera),
+      initialRoute:'/AuthPageRoute' ,
       routes: {
         '/AuthPageRoute':(context)=>AuthPage(camera:firstCamera)
       },

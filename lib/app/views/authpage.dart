@@ -5,6 +5,7 @@ import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart' as ph;
 import 'package:pictureflutter/app/views/takepicturepagekid.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;
 
 
 class AuthPage extends StatefulWidget {
@@ -20,6 +21,28 @@ class _AuthPageState  extends State<AuthPage>{
   _AuthPageState(CameraDescription camera);
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _isLoading = false;
+
+  checkInternet() async {
+    try {
+      final response = await http.get(Uri.parse('https://github.com/KevinLandim/ToothHeroUser'));
+      if (response.statusCode == 200) {
+        // Estou conectado à internet.
+        print('Conectado à internet');
+      } else {
+        // A conexão com o servidor foi estabelecida, mas ocorreu um erro ao acessar a internet.
+        print('Erro ao acessar a internet');
+      }
+    } catch (e) {ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Sem conexão!")));
+    // Não consegui estabelecer uma conexão com o servidor.
+    print('Não conectado à internet');
+    }
+  }
+  @override
+  void initState(){
+    super.initState();
+    checkInternet();
+
+  }
 
 
 

@@ -14,6 +14,7 @@ class PersonalData extends StatefulWidget {
   const PersonalData({super.key,required this.listOfImages});
   @override
   State<StatefulWidget> createState() =>_PersonalDataState();
+  static String nomeSocorrista="";
 }
 
 class _PersonalDataState extends State<PersonalData>{
@@ -58,6 +59,7 @@ class _PersonalDataState extends State<PersonalData>{
     print("Longitude:${_locationData.longitude.toString()}e  latitude:${_locationData.latitude.toString()}");
   }
 
+
   @override
   Widget build(BuildContext context) {
     CollectionReference firestore = FirebaseFirestore.instance.collection('emergencias');
@@ -72,9 +74,9 @@ class _PersonalDataState extends State<PersonalData>{
           'telefone': telefone,
           'datahora': DateTime.now().toString(),
           'status': 'aberta',
-          'fotoCrianca': imageKidPath,
-          'fotoDoc':imageDocPath,
-          'fotoAmbos':imageBothPath,
+          'fotocrianca': imageKidPath,
+          'fotodoc':imageDocPath,
+          'fotoambos':imageBothPath,
           'latitude': await getCoordinates('latitude'),
           'longitude': await  getCoordinates('longitude')
         });
@@ -108,7 +110,7 @@ class _PersonalDataState extends State<PersonalData>{
                 longSocorrista: getCoordinates('longitude'),))
         );*/
       } catch (e) {
-        print('Error adding emergencia: $e');
+        print('Erro ao adicionar emergencia: $e');
       }
     }
 
@@ -139,6 +141,9 @@ class _PersonalDataState extends State<PersonalData>{
 
         await addEmergencia(
             nomeController.text, telefoneController.text,imagePaths[0],imagePaths[1],imagePaths[2]);
+        setState(() {
+         PersonalData.nomeSocorrista= nomeController.text.toString();//Variável global para RatingPage acessar o nome
+        });
       } on FirebaseException catch (e) {
         throw Exception('Erro no upload:${e.code}');
       }

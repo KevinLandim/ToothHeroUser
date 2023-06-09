@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'maps.dart';
@@ -93,7 +94,7 @@ class _DentisListState extends State<DentisList> {
                   child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance.collection('atendimentos')//stream é a fonte contínua de dados
                         .where('status', isEqualTo: "Aceito")
-                        .where('emergenciaId',isEqualTo:widget.idDocEmergencia)
+                        .where('emergenciaId',isEqualTo: '${widget.idDocEmergencia}')
                         .snapshots(),
                     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {//sempre que um valor novo é emitido pelo stream,o builder atualiza
                       if (snapshot.hasError) {
@@ -149,8 +150,12 @@ class _DentisListState extends State<DentisList> {
                                             );
                                             Navigator.push(context,MaterialPageRoute(builder: (context)=>
                                                 MapPage(idDocEmergencia:widget.idDocEmergencia,
+                                                    idDocAtendimento:document.id,
                                                     latSocorrista:widget.latSocorrista,
-                                                    longSocorrista:widget.longSocorrista)));
+                                                    longSocorrista:widget.longSocorrista,
+                                                    latDentista:double.parse(data['latitude']),
+                                                    longDentista:double.parse(data['longitude'])
+                                                      )));
                                           },
                                         ),
                                       ],
@@ -161,6 +166,7 @@ class _DentisListState extends State<DentisList> {
                           }).toList(),
                         );
                       } else {
+                        print('AAAAAAAAAAAAAAAAAA${widget.idDocEmergencia}');
                         return Container(
                           margin: const EdgeInsets.only(top:30.0),
                           child: const Column(
@@ -172,7 +178,7 @@ class _DentisListState extends State<DentisList> {
                               ),
                               SizedBox(height: 16.0),
                               Text(
-                                  'Aguardando dentistas aceitarem'
+                                  'Aguardando dentistas aceitarem '
                               )
                             ],
                           ),
