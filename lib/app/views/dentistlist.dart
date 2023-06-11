@@ -25,6 +25,7 @@ class _DentisListState extends State<DentisList> {
 
 
 
+
   Future<void> emergenciaFechadaUpdate(String documentId) async {//executada quando o socorrista escolhe o dentista
     try {
       CollectionReference emergenciasCollection =
@@ -51,8 +52,6 @@ class _DentisListState extends State<DentisList> {
     try {
       CollectionReference atendimentosCollection = FirebaseFirestore.instance.collection('atendimentos');
       atendimentosCollection.doc(idDocAtendimento).update({'status':'em andamento'});
-
-
     }catch(e){
       print('Erro ao atualizar status do documento:$e');
 
@@ -94,9 +93,8 @@ class _DentisListState extends State<DentisList> {
         body: Center(
                   child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance.collection('atendimentos')//stream é a fonte contínua de dados
-                        .where('status', isEqualTo: "Aceito")
-                        .where('emergenciaId', isEqualTo: "${widget.idDocEmergencia}")
-                       // .where('nome', isEqualTo: 'x')
+                     .where('emergenciaId', isEqualTo: widget.idDocEmergencia)
+                      .where('status', isEqualTo: 'Aceito')
                         .snapshots(),
                     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {//sempre que um valor novo é emitido pelo stream,o builder atualiza
                       if (snapshot.hasError) {
@@ -115,14 +113,12 @@ class _DentisListState extends State<DentisList> {
                           children: snapshot.data!.docs.map((DocumentSnapshot document) {
                             Map <String, dynamic> data = document.data() as Map<String, dynamic>;
 
-
                             double distanceInKm = calculateDistance(
                                 double.parse(data['latitude']),
                                 double.parse(data['longitude']),
                                 widget.latSocorrista,
                                 widget.longSocorrista,
                             );
-
 
                             if (distanceInKm.round() <20) {
                               return Container(

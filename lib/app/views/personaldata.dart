@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +10,8 @@ import 'package:firebase_storage/firebase_storage.dart' ;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dentistlist.dart';
+import 'package:http/http.dart' as http;
+
 
 class PersonalData extends StatefulWidget {
   final List listOfImages;
@@ -66,51 +70,57 @@ class _PersonalDataState extends State<PersonalData>{
     TextEditingController nomeController = TextEditingController();
     TextEditingController telefoneController = TextEditingController();
 
+
+
     Future<void> addEmergencia(String nome, String telefone,
         String imageKidPath,String imageDocPath,String imageBothPath) async {
+      double lat = await getCoordinates('latitude');
+      double long = await getCoordinates('longitude');
+
+      // Construa a URL do servidor de funções
+      final url = Uri.parse('https://southamerica-east1-toothhero-4102d.cloudfunctions.net/addEmergencia');
+
+      // Dados a serem enviados
+      Map<String, String> headers = {"Content-type": "application/json"};
+      String json = jsonEncode({
+        'nome': nome,
+        'telefone': telefone,
+        'datahora': DateTime.now().toString(),
+        'imageKidPath': imageKidPath,
+        'imageDocPath': imageDocPath,
+        'imageBothPath': imageBothPath,
+        'latitude': lat.toString(),
+        'longitude': long.toString(),
+      });
+
       try {
-        DocumentReference documentRef = await firestore.add({
-          'nome': nome,
-          'telefone': telefone,
-          'datahora': DateTime.now().toString(),
-          'status': 'aberta',
-          'fotocrianca': imageKidPath,
-          'fotodoc':imageDocPath,
-          'fotoambos':imageBothPath,
-          'latitude': await getCoordinates('latitude'),
-          'longitude': await  getCoordinates('longitude')
-        });
-
-        String documentId = documentRef.id;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Emergência aberta!')),
-        );
-
-        Future<void> navigateToDentistList() async {
-          double lat = await getCoordinates('latitude');
-          double long = await getCoordinates('longitude');
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => DentisList(
-                idDocEmergencia: documentId,
-                latSocorrista: lat,
-                longSocorrista: long,
-              ),
-            ),
+        // Faça a solicitação POST
+        final response = await http.post(url, headers: headers, body: json);
+        // Trate a resposta
+        if (response.statusCode == 200) {
+          final documentId = jsonDecode(response.body)['documentId'];
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Emergência aberta!')),
           );
-        }
-        navigateToDentistList();
 
-        /*Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context)  => DentisList(documentId: documentId,
-                latSocorrista:  getCoordinates('latitude'),
-                longSocorrista: getCoordinates('longitude'),))
-        );*/
-      } catch (e) {
-        print('Erro ao adicionar emergencia: $e');
+          Future<void> navigateToDentistList() async {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DentisList(
+                  idDocEmergencia: documentId,
+                  latSocorrista: lat,
+                  longSocorrista: long,
+                ),
+              ),
+            );
+          }
+          navigateToDentistList();
+        } else {
+          print('Failed to open emergency. Server responded with ${response.statusCode}');
+        }
+      } catch(e) {
+        print('Failed to open emergency: $e');
       }
     }
 
