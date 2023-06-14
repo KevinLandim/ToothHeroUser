@@ -119,39 +119,172 @@ class _AuthPageState  extends State<AuthPage>{
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-      body: Center(
-          child: _isLoading
-              ? CircularProgressIndicator() // Mostre a barra de carregamento se _isLoading for true
-              : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Olá,bem vindo ao tooth-hero"),
-                  Text("Sobre a empresa...."),
-                  ElevatedButton(
-                    onPressed:()async{
-                       await requestCameraPermission();
-                       await requestStoragePermission();
-                       await requestLocationPermission();
-                        _signInAnonymously();
-                      Navigator.push(
-                          context as BuildContext,
-                          MaterialPageRoute(builder:(context)=>
-                              TakePictureScreenKid(camera:widget.camera)
-                          //FirstPage(camera: widget.camera)
-                          )
-                      );
+      return Scaffold(
+          body: SafeArea(
+              child: Padding(
+                  padding: EdgeInsets.all(0),
+                  child: _isLoading
+                      ? CircularProgressIndicator()
+                  // Mostre a barra de carregamento se _isLoading for true
+                      : Column(
+                      children: <Widget>[
+                        Padding(padding: EdgeInsets.only(top: 0),
+                          child: Container(
+                            padding: EdgeInsets.only(top: 40),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.horizontal(),
+                              color: Colors.indigo[400],
+                            ),
+                            height: MediaQuery
+                                .of(context)
+                                .size
+                                .height / 3.5,
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start,
+                                    children: <Widget>[ Text("Olá,",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 40, color: Colors.white),
+                                    ),
+                                      Text("Bem vindo", style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20, color: Colors.white54),
+                                      ),
+                                      Text("Ao Tooth-hero!", style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20, color: Colors.white54),
+                                      ),
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 15, left: 45),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                            child: SizedBox(
+                                              height: 100,
+                                              child: Image.asset("assets/imagens/ic_dente_png.png"),
+                                            )
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ]
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(right: 150, top: 35),
+                          child: Column(
+                              children: <Widget>[Text("Sobre a empresa....", style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18, color: Colors.deepPurpleAccent)),]
 
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 5),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Colors.indigo[100]
+                            ),
+                            height: MediaQuery
+                                .of(context)
+                                .size
+                                .height / 3.4,
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width / 1.3,
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 10, top: 20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    "Nossa plataforma oferece facilidade tanto ao usuario e ao colaborador a oferecer um serviço"
+                                        " de atendimento de urgencia direcionado ao publico infantil.",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                        color: Colors.white
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                            padding: EdgeInsets.only(top: 20)
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            _signInAnonymously();
+                            Navigator.push(
+                                context as BuildContext,
+                                MaterialPageRoute(builder: (context) =>
+                                    TakePictureScreenKid(camera: widget.camera)
+                                  //FirstPage(camera: widget.camera)
 
-                    },
-                    child:Text("Clique aqui para solicitar o socorro!"),
-                  ),
+                                )
 
-                ],
+                            );
+                            decoration:
+                            BoxDecoration(
+                              borderRadius: BorderRadius.circular(100),
+                              color: Colors.deepPurple,
+                            );
+                          },
 
+                          child:
+
+                          const Text("Clique aqui para solicitar o socorro!"),
+                        ),
+                        const Padding(
+                            padding: EdgeInsets.only(top: 20)
+                        ),
+                        const Text(
+                            "Caso tenha algum problema, entre em contato conosco:"),
+                        const Padding(
+                            padding: EdgeInsets.only(top: 20)
+                        ),
+                        const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text("E-MAIL: herotooth@gmail.com",
+                                style: TextStyle(fontWeight: FontWeight.normal,
+                                    fontSize: 10, color: Colors.black),
+                              ),
+                              Icon(Icons.email),
+                              Padding(
+                                  padding: EdgeInsets.only(top: 5)
+                              ),
+                              Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text("TELEFONE: +55 19 999999-9999",
+                                      style: TextStyle(fontWeight: FontWeight
+                                          .normal,
+                                          fontSize: 10, color: Colors.black),
+                                    ),
+                                    Icon(Icons.call),
+                                  ]
+                              ),
+                            ]
+                        )
+                      ]
+                  )
+              )
           )
-
-      ),
-    );
+      );
+    }
   }
-}
