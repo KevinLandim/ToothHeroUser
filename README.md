@@ -1,4 +1,4 @@
-# pictureflutter
+# ToothHero
 
 A new Flutter project.
 

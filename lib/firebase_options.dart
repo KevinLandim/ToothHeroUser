@@ -71,6 +71,6 @@ class DefaultFirebaseOptions {
     projectId: 'toothhero-4102d',
     storageBucket: 'toothhero-4102d.appspot.com',
     iosClientId: '487195058314-h372ddgeasd1rq0rfh0qonoj728ip0uf.apps.googleusercontent.com',
-    iosBundleId: 'com.example.pictureflutter',
+    iosBundleId: 'com.example.ToothHero',
   );
 }

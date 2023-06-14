@@ -4,8 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:pictureflutter/app/views/dentistlist.dart';
-import 'package:pictureflutter/app/views/personaldata.dart';
+import 'package:ToothHero/app/views/dentistlist.dart';
+import 'package:ToothHero/app/views/personaldata.dart';
 
 
 class RatingPage extends StatefulWidget{
@@ -207,7 +207,7 @@ class _RatingPageState extends State<RatingPage>{
 
     return Scaffold(
       body: StreamBuilder<DocumentSnapshot>(/*widget.idDocAtendimento*/
-            stream:FirebaseFirestore.instance.collection('atendimentos').doc('x').snapshots(),
+            stream:FirebaseFirestore.instance.collection('atendimentos').doc(widget.idDocAtendimento).snapshots(),
             builder:(BuildContext context,AsyncSnapshot<DocumentSnapshot>snapshot){
             if(snapshot.hasError){return Text("Ocorreu algum erro ao receber o pedido de avaliação");}
             if (snapshot.hasData && snapshot.data != null) {

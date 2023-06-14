@@ -6,8 +6,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'dart:async';
 
-import 'package:pictureflutter/app/views/dentistlist.dart';
-import 'package:pictureflutter/app/views/ratingpage.dart';
+import 'package:ToothHero/app/views/dentistlist.dart';
+import 'package:ToothHero/app/views/ratingpage.dart';
 
 
 
