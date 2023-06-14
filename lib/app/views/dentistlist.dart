@@ -89,105 +89,118 @@ class _DentisListState extends State<DentisList> {
         return false;
       },
       child: Scaffold(
-        appBar: AppBar(title: const Text('Dentistas disponíveis')),
         body: Center(
-                  child: StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance.collection('atendimentos')//stream é a fonte contínua de dados
-                     .where('emergenciaId', isEqualTo: widget.idDocEmergencia)
-                      .where('status', isEqualTo: 'Aceito')
-                        .snapshots(),
-                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {//sempre que um valor novo é emitido pelo stream,o builder atualiza
-                      if (snapshot.hasError) {
-                        return const Text('Algo deu errado');
-                      }
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator(
-                          strokeWidth: 2.0,
-                        );
-                      }
-                      // Verifica se há dados antes de acessar 'docs'
-                      if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-                        return ListView(
-                          //map é um método que executa uma determinada função para cada elemento da lista
-                          //no caso, uma lista de snapshots, que são  documentos recuperados do firestore
-                          children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                            Map <String, dynamic> data = document.data() as Map<String, dynamic>;
+                  child: Column(
 
-                            double distanceInKm = calculateDistance(
-                                double.parse(data['latitude']),
-                                double.parse(data['longitude']),
-                                widget.latSocorrista,
-                                widget.longSocorrista,
-                            );
+                    children: [
+                      Padding(
+                        padding:EdgeInsets.only(top:40),
+                        child: Text('Dentistas disponíveis:',style:TextStyle(fontSize: 24,fontWeight:FontWeight.bold,color: Colors.deepPurple),),
+                      ),
+                      Expanded(
+                        child: StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance.collection('atendimentos')//stream é a fonte contínua de dados
+                         //  .where('emergenciaId', isEqualTo: widget.idDocEmergencia)
+                            .where('status', isEqualTo: 'Aceito1')
+                              .snapshots(),
+                          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {//sempre que um valor novo é emitido pelo stream,o builder atualiza
+                            if (snapshot.hasError) {
+                              return const Text('Algo deu errado');
+                            }
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const CircularProgressIndicator(
+                                strokeWidth: 2.0,
+                              );
+                            }
+                            // Verifica se há dados antes de acessar 'docs'
+                            if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                              return ListView(
+                                //map é um método que executa uma determinada função para cada elemento da lista
+                                //no caso, uma lista de snapshots, que são  documentos recuperados do firestore
+                                children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                                  Map <String, dynamic> data = document.data() as Map<String, dynamic>;
 
-                            if (distanceInKm.round() <20) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                  border:Border.all(
-                                      color:Colors.blue,
-                                      width:2
-                                  ),
-                                ),
-                                child: Column(
-                                  children: [
-                                    ListTile(
-                                      title: Text("Dentista: ${data['nome'] ?? 'Nome não disponível'}"),
-                                      subtitle: Text("Horário  ${data['datahora'] ?? 'Data/Hora não disponível'}"),),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                      children: [
-                                        TextButton(onPressed:null,child:Text('${distanceInKm.round()}Km')),
-                                        ElevatedButton(
-                                          child:const Text("Escolher"),
-                                          //icon: Icon(Icons.phone),
-                                          onPressed:(){
-                                            emergenciaFechadaUpdate(widget.idDocEmergencia);
-                                            SendCallNotification(document.id);
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              const SnackBar(
-                                                content: Text('Você aceitou este dentista. \n'
-                                                    'Ele te ligará em breve'),
-                                              ),
-                                            );
-                                            Navigator.push(context,MaterialPageRoute(builder: (context)=>
-                                                MapPage(idDocEmergencia:widget.idDocEmergencia,
-                                                    idDocAtendimento:document.id,
-                                                    latSocorrista:widget.latSocorrista,
-                                                    longSocorrista:widget.longSocorrista,
-                                                    latDentista:double.parse(data['latitude']),
-                                                    longDentista:double.parse(data['longitude'])
-                                                      )));
-                                            setState(() {DentisList.profissionalId=data['profissionalId'];});
-                                          },
+                                  double distanceInKm = calculateDistance(
+                                      double.parse(data['latitude']),
+                                      double.parse(data['longitude']),
+                                      widget.latSocorrista,
+                                      widget.longSocorrista,
+                                  );
+
+                                  if (distanceInKm.round() <20) {
+                                    return Container(
+                                      margin: EdgeInsets.only(top:0,left:10,right:10,bottom:10),
+                                      decoration: BoxDecoration(
+                                        border:Border.all(
+                                            color:Colors.deepPurple,
+                                            width:2
                                         ),
-                                      ],
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          ListTile(
+                                            title: Text("Dentista: ${data['nome'] ?? 'Nome não disponível'}",style:TextStyle(color:Colors.deepPurple,fontWeight: FontWeight.bold),),
+                                            subtitle: Text("Horário  ${data['datahora'] ?? 'Data/Hora não disponível'}",style: TextStyle(color:Colors.deepPurple),),),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                            children: [
+                                              TextButton(onPressed:null,child:Text('${distanceInKm.round()}Km',style:TextStyle(color: Colors.deepPurple),)),
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(backgroundColor:Colors.deepPurple),
+                                                child:const Text("Escolher"),
+                                                onPressed:(){
+                                                  emergenciaFechadaUpdate(widget.idDocEmergencia);
+                                                  SendCallNotification(document.id);
+                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                    const SnackBar(
+                                                      content: Text('Você aceitou este dentista. \n'
+                                                          'Ele te ligará em breve'),
+                                                    ),
+                                                  );
+                                                  Navigator.push(context,MaterialPageRoute(builder: (context)=>
+                                                      MapPage(idDocEmergencia:widget.idDocEmergencia,
+                                                          idDocAtendimento:document.id,
+                                                          latSocorrista:widget.latSocorrista,
+                                                          longSocorrista:widget.longSocorrista,
+                                                          latDentista:double.parse(data['latitude']),
+                                                          longDentista:double.parse(data['longitude'])
+
+                                                            )));
+                                                  setState(() {DentisList.profissionalId=data['profissionalId'];});
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    );}else{return const Visibility(visible:false,child: CircularProgressIndicator()); }
+                                }).toList(),
+                              );
+                            } else {
+                              print('AAAAAAAAAAAAAAAAAA${widget.idDocEmergencia}');
+                              return Container(
+                                margin: const EdgeInsets.only(top:30.0),
+                                child: const Column(
+
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CircularProgressIndicator(
+                                      color: Colors.deepPurple,
+                                      strokeWidth: 2.0,
                                     ),
+                                    SizedBox(height: 16.0),
+                                    Text( style:TextStyle(color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize:19),
+                                        'Aguardando dentistas aceitarem '
+                                    )
                                   ],
                                 ),
-                              );}else{return const Visibility(visible:false,child: CircularProgressIndicator()); }
-                          }).toList(),
-                        );
-                      } else {
-                        print('AAAAAAAAAAAAAAAAAA${widget.idDocEmergencia}');
-                        return Container(
-                          margin: const EdgeInsets.only(top:30.0),
-                          child: const Column(
+                              );
 
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CircularProgressIndicator(
-                                strokeWidth: 2.0,
-                              ),
-                              SizedBox(height: 16.0),
-                              Text(
-                                  'Aguardando dentistas aceitarem '
-                              )
-                            ],
-                          ),
-                        );
-
-                      }
-                    },
+                            }
+                          },
+                        ),
+                      ),
+                    ],
                   ),
 
             ),
@@ -203,6 +216,7 @@ class _DentisListState extends State<DentisList> {
                 emergenciaCanceladaUpdate(widget.idDocEmergencia);
 
               },
+              style: ElevatedButton.styleFrom(backgroundColor:Colors.deepPurple),
               child: const Text("Cancelar"),
             ),
           ),

@@ -1,5 +1,6 @@
 
 
+import 'package:ToothHero/app/views/thankspage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +54,7 @@ class _RatingPageState extends State<RatingPage>{
           actions: <Widget>[
 
             TextButton(
-              child: Text("Enviar"),
+              child: Text("Enviar",style:TextStyle(color: Colors.deepPurple)),
               onPressed: () {
                 Navigator.of(context).pop();
                 // TODO: Handle rating submission
@@ -61,7 +62,7 @@ class _RatingPageState extends State<RatingPage>{
               },
             ),
             TextButton(
-              child: Text("Cancel"),
+              child: Text("Cancelar",style:TextStyle(color: Colors.deepPurple)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -86,7 +87,7 @@ class _RatingPageState extends State<RatingPage>{
           ),
           actions: <Widget>[
             TextButton(
-              child: Text("Enviar"),
+              child: Text("Enviar",style:TextStyle(color: Colors.deepPurple),),
               onPressed: () {
                 comentarioDentista=_controller.text.toString();
                 print('Input: ${_controller.text}'); // Use the text input
@@ -95,7 +96,7 @@ class _RatingPageState extends State<RatingPage>{
               },
             ),
             TextButton(
-              child: Text("Cancel"),
+              child: Text("Cancelar",style:TextStyle(color: Colors.deepPurple)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -131,7 +132,7 @@ class _RatingPageState extends State<RatingPage>{
           actions: <Widget>[
 
             TextButton(
-              child: Text("Enviar"),
+              child: Text("Enviar",style:TextStyle(color: Colors.deepPurple)),
               onPressed: () {
                 Navigator.of(context).pop();
                 // TODO: Handle rating submission
@@ -139,7 +140,7 @@ class _RatingPageState extends State<RatingPage>{
               },
             ),
             TextButton(
-              child: Text("Cancel"),
+              child: Text("Cancelar",style:TextStyle(color: Colors.deepPurple)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -164,17 +165,18 @@ class _RatingPageState extends State<RatingPage>{
           ),
           actions: <Widget>[
             TextButton(
-              child: Text("Enviar"),
+              child: Text("Enviar",style:TextStyle(color: Colors.deepPurple)),
               onPressed: () {
                 comentarioApp=_controller.text.toString();
                 print('Input: ${_controller.text}'); // Use the text input
                 Navigator.of(context).pop();
                 print('notaDentista:$notaDentista. comentarioDentista:$comentarioDentista,notaApp:$notaApp,comentarioApp:$comentarioApp');
                 enviarAvaliacoes();
+                Navigator.push(context,MaterialPageRoute(builder: (context)=>ThanksPage()));
               },
             ),
             TextButton(
-              child: Text("Cancel"),
+              child: Text("Cancelar",style:TextStyle(color: Colors.deepPurple)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -206,7 +208,7 @@ class _RatingPageState extends State<RatingPage>{
 
 
     return Scaffold(
-      body: StreamBuilder<DocumentSnapshot>(/*widget.idDocAtendimento*/
+      body: StreamBuilder<DocumentSnapshot>(
             stream:FirebaseFirestore.instance.collection('atendimentos').doc(widget.idDocAtendimento).snapshots(),
             builder:(BuildContext context,AsyncSnapshot<DocumentSnapshot>snapshot){
             if(snapshot.hasError){return Text("Ocorreu algum erro ao receber o pedido de avaliação");}
@@ -219,16 +221,20 @@ class _RatingPageState extends State<RatingPage>{
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text("Clique no botão abaixo para avaliar os nossos serviços"),
+                Text("São 4 perguntas rápidas para avaliar os nossos serviços!",
+                  style: TextStyle(color: Colors.deepPurple,fontSize:18),
+                  textAlign: TextAlign.center,),
                 ElevatedButton(
                 onPressed: (){ _mostrarEntradaDeNotaDentista(context);},
-                child:Text("Avaliar!")
+                child:Text("Iniciar avaliação!"),
+                  style: ElevatedButton.styleFrom(backgroundColor:Colors.deepPurple),
                 ),
               ],
             )
             ));
 
-            }else{return Center(child: Text('Aguarde o dentista finalizar o atendimento'));}}else{return Center(child: Text('Aguarde o dentista finalizar o atendimento'));}
+            }else{return Center(child: Text('Aguarde o dentista finalizar o atendimento',textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.deepPurple,fontSize:18),));}}else{return Center(child: Text('Aguarde o dentista finalizar o atendimento'));}
           })
     );
 

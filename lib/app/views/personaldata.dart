@@ -79,7 +79,6 @@ class _PersonalDataState extends State<PersonalData>{
 
       // Construa a URL do servidor de funções
       final url = Uri.parse('https://southamerica-east1-toothhero-4102d.cloudfunctions.net/addEmergencia');
-
       // Dados a serem enviados
       Map<String, String> headers = {"Content-type": "application/json"};
       String json = jsonEncode({
@@ -89,8 +88,8 @@ class _PersonalDataState extends State<PersonalData>{
         'imageKidPath': imageKidPath,
         'imageDocPath': imageDocPath,
         'imageBothPath': imageBothPath,
-        'latitude': lat.toString(),
-        'longitude': long.toString(),
+        'latitude': lat,
+        'longitude': long,
       });
 
       try {
@@ -164,71 +163,98 @@ class _PersonalDataState extends State<PersonalData>{
         margin: EdgeInsets.only(top: 60.0),
         child:SingleChildScrollView(
 
-          child: Column(
-                children: [
-                  Text("Documentos a enviar:"),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children:
-                    widget.listOfImages.map((imagem) => Container(
-                        margin: EdgeInsets.only(right: 5,bottom: 5,top:5),
-                        width: 100,
-                        child: Image.file(File(imagem)))).toList()
-                    ,
-                  ),
-                  TextField(
-                    controller: nomeController,
-                    decoration: InputDecoration(
-                        labelText: 'Nome do responsável',
-                        border: OutlineInputBorder()
-                    ),
+          child: Container(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding:EdgeInsets.all(10),
+                        child: Text('Documentos a enviar:', textAlign: TextAlign.center, style:TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize:20,
+                            color: Colors.deepPurple
+                        )
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children:
+                        widget.listOfImages.map((imagem) => Container(
+                            margin: EdgeInsets.only(right: 5,bottom: 5,top:5),
+                            width: 100,
+                            child: Image.file(File(imagem)))).toList()
+                        ,
+                      ),
+                      Container(
+                        padding:EdgeInsets.only(top:10),
+                        width:320,
+                        child: TextField(
+                          controller: nomeController,
+                          decoration: InputDecoration(
+                              labelText: 'Nome do responsável',
+                              border: OutlineInputBorder()
+                          ),
 
-                  ),
-                  TextField(
-                    keyboardType: TextInputType.number,
-                    inputFormatters: <TextInputFormatter>[
-                      FilteringTextInputFormatter.digitsOnly
+                        ),
+                      ),
+                      Container(
+                        padding:EdgeInsets.only(top:10,bottom:10),
+                        width:320,
+                        child: TextField(
+                          keyboardType: TextInputType.number,
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          controller: telefoneController,
+                          decoration: InputDecoration(
+                              labelText: 'Telefone',
+                              border: OutlineInputBorder()
+                          ),
+
+                        ),
+                      ),
+                if(visibility) // Só irá aparecer a barra de progresso das imagens quando o botão for clicado
+                Stack(
+                  children: <Widget>[
+                    Center(
+                      child: SizedBox(
+                        height: 20.0,
+                        width:320,
+                        child: LinearProgressIndicator(
+                          backgroundColor: Colors.deepPurple,
+                          color:Colors.purple,
+                          value: uploadProgress,
+                        ),
+                      ),
+                    ),
+                    // Posiciona o texto no centro do LinearProgressIndicator.
+                    Center(
+                      child: Text(
+                        'Enviando imagens ...',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                      ElevatedButton(
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();//Tira o foco do widget que tem foco(no caso, fecha o teclado)
+                          addImagem(widget.listOfImages);
+                          setState(() {
+                            visibility=true;
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(backgroundColor:Colors.deepPurple),
+                        child: Text("Solicitar emergência!"),
+                      ),
                     ],
-                    controller: telefoneController,
-                    decoration: InputDecoration(
-                        labelText: 'Telefone',
-                        border: OutlineInputBorder()
-                    ),
-
                   ),
-            if(visibility) // Só irá aparecer a barra de progresso das imagens quando o botão for clicado
-            Stack(
-              children: <Widget>[
-                SizedBox(
-                  height: 20.0,
-                  child: LinearProgressIndicator(
-                    value: uploadProgress,
-                  ),
-                ),
-                // Posiciona o texto no centro do LinearProgressIndicator.
-                Center(
-                  child: Text(
-                    'Enviando imagens ...',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
             ),
-
-                  ElevatedButton(
-                    onPressed: () {
-                      FocusScope.of(context).unfocus();//Tira o foco do widget que tem foco(no caso, fecha o teclado)
-                      addImagem(widget.listOfImages);
-                      setState(() {
-                        visibility=true;
-                      });
-                    },
-                    child: Text("Solicitar emergência!"),
-                  ),
-                ],
-              ),
+          ),
 
         ),
       ),
@@ -240,6 +266,7 @@ class _PersonalDataState extends State<PersonalData>{
             onPressed: (){
               Navigator.of(context).popAndPushNamed('/AuthPageRoute');
             },
+            style: ElevatedButton.styleFrom(backgroundColor:Colors.deepPurple),
             child: Text("Cancelar"),
           ),
         ),

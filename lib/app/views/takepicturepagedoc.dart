@@ -87,8 +87,8 @@ class TakePictureScreenDocState extends State<TakePictureScreenDoc> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(name),
-            Icon(icon),
+            Text(name,style:TextStyle(color:Colors.deepPurple)),
+            Icon(icon,color:Colors.deepPurple),
           ],
 
         )
@@ -121,7 +121,15 @@ class TakePictureScreenDocState extends State<TakePictureScreenDoc> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Fotografe os seus documentos:'),
+                Padding(
+                padding:EdgeInsets.all(10),
+                child: Text('Tire uma foto do seu documento:', textAlign: TextAlign.center, style:TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize:20,
+                    color: Colors.deepPurple
+                )
+                ),
+              ),
                     Container(
                         height: 300.0,
                         child: imagePath!= null
@@ -167,6 +175,7 @@ class TakePictureScreenDocState extends State<TakePictureScreenDoc> {
               onPressed: (){
                 Navigator.of(context).popAndPushNamed('/AuthPageRoute');
                 },
+              style: ElevatedButton.styleFrom(backgroundColor:Colors.deepPurple),
               child: Text("Cancelar"),
             ),
           ),

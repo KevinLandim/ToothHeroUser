@@ -85,8 +85,8 @@ class TakePictureScreenKidState extends State<TakePictureScreenKid> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(name),
-            Icon(icon),
+            Text(name,style:TextStyle(color:Colors.deepPurple)),
+            Icon(icon,color:Colors.deepPurple),
           ],
 
         )
@@ -115,7 +115,16 @@ class TakePictureScreenKidState extends State<TakePictureScreenKid> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment:CrossAxisAlignment.center,
                   children: [
-                    Text('Fotografe a boca/região acidentada da criança:'),
+                    Padding(
+                      padding:EdgeInsets.all(10),
+                      child: Text('Fotografe a boca/região acidentada da criança:', textAlign: TextAlign.center, style:TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize:20,
+                          color: Colors.deepPurple
+                      )
+                      ),
+                    ),
+
                     Container(
                        height: 300.0,
                         child: imagePath!= null
@@ -161,7 +170,8 @@ class TakePictureScreenKidState extends State<TakePictureScreenKid> {
               onPressed: (){
                 Navigator.of(context).popAndPushNamed('/AuthPageRoute');
                 },
-              child: Text("Cancelar"),
+              style: ElevatedButton.styleFrom(backgroundColor:Colors.deepPurple),
+              child: Text("Cancelar",style:TextStyle(color:Colors.white)),
             ),
           ),
         ),

@@ -133,7 +133,7 @@ class _AuthPageState  extends State<AuthPage>{
                             padding: EdgeInsets.only(top: 40),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.horizontal(),
-                              color: Colors.indigo[400],
+                              color: Colors.deepPurple,
                             ),
                             height: MediaQuery
                                 .of(context)
@@ -184,7 +184,7 @@ class _AuthPageState  extends State<AuthPage>{
                           child: Column(
                               children: <Widget>[Text("Sobre a empresa....", style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 18, color: Colors.deepPurpleAccent)),]
+                                  fontSize: 18, color: Colors.deepPurple)),]
 
                           ),
                         ),
@@ -245,9 +245,8 @@ class _AuthPageState  extends State<AuthPage>{
                             );
                           },
 
-                          child:
-
-                          const Text("Clique aqui para solicitar o socorro!"),
+                          style: ElevatedButton.styleFrom(backgroundColor:Colors.deepPurple),
+                          child:const Text("Clique aqui para solicitar o socorro!"),
                         ),
                         const Padding(
                             padding: EdgeInsets.only(top: 20)

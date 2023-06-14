@@ -82,8 +82,8 @@ class TakePictureScreenBothState extends State<TakePictureScreenBoth> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(name),
-            Icon(icon),
+            Text(name,style:TextStyle(color:Colors.deepPurple)),
+            Icon(icon,color:Colors.deepPurple),
           ],
 
         )
@@ -115,7 +115,15 @@ class TakePictureScreenBothState extends State<TakePictureScreenBoth> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Foto do responsável com a criança:'),
+                    Padding(
+                    padding:EdgeInsets.all(10),
+                    child: Text('Foto do responsável com a criança:', textAlign: TextAlign.center, style:TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize:20,
+                        color: Colors.deepPurple
+                    )
+                    ),
+                  ),
                     Container(
                         height: 300.0,
                         child: imagePath!= null
@@ -159,6 +167,7 @@ class TakePictureScreenBothState extends State<TakePictureScreenBoth> {
             alignment: Alignment.bottomLeft,
             child: ElevatedButton(
               onPressed:(){  Navigator.of(context).popAndPushNamed('/AuthPageRoute');},
+              style: ElevatedButton.styleFrom(backgroundColor:Colors.deepPurple),
               child: Text("Cancelar"),
             ),
           ),

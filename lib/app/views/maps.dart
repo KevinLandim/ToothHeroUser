@@ -47,7 +47,7 @@ class _MapPageState extends State<MapPage> {
 
     void _startTimer() {
       _isTimeOver = false;
-      _timer = Timer(Duration(seconds:20), () {
+      _timer = Timer(Duration(minutes:1), () {
         setState(() {
           _isTimeOver = true;
         });
@@ -63,7 +63,7 @@ class _MapPageState extends State<MapPage> {
       var socorristaPinMap = LatLng(currentLocation.latitude!, currentLocation.longitude!);
       _markers.add(Marker(markerId: MarkerId('userMarkerId'), position: socorristaPinMap));
       _markers.add(Marker(markerId: MarkerId('dentistMarkerId'),position: dentistPinPosition));
-      mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(zoom: 12, target: socorristaPinMap)));
+      mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(zoom: 10, target: socorristaPinMap)));
     });
   }
 
@@ -99,12 +99,14 @@ class _MapPageState extends State<MapPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        margin: EdgeInsets.only(top:80,left: 20,right: 20,bottom:20),
+        margin: EdgeInsets.only(top:60,left: 20,right: 20,bottom:20),
         child: SingleChildScrollView(
             child:Column(
               children: [
-                Text("Atendimento em andamento"),
-                Text("Mapa com a localização sua e do dentista"),
+                Padding(
+                  padding: const EdgeInsets.only(bottom:20),
+                  child: Text("Atendimento em andamento",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18,color: Colors.black),),
+                ),
                 Container(
                   height: 300,
                   child: GoogleMap(
@@ -113,10 +115,32 @@ class _MapPageState extends State<MapPage> {
                       markers: _markers,
                   ),
                 ),
-                Text('Para abrir o Maps e visualizar a rota'
-                    ' até a localização do dentista, clique no Pino vermelho,e depois no Icone do maps'),
-                Text("Se o dentista não te ligar em até um minuto por favor, clique no botão abaixo"),
-                Row(
+                Card(
+                  child: Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Column(
+                      children: <Widget>[
+                        Text('Para abrir o Maps e visualizar a rota até a localização do dentista, clique no Pino vermelho,e depois no Icone do maps',
+                            style:TextStyle(color: Colors.black,fontSize: 16)),
+
+                      ],
+                    ),
+                  ),
+
+                ),
+                Card(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: <Widget>[
+                        Text("Se o dentista não te ligar em até 1  minuto,por favor, clique no botão abaixo",
+                            style:TextStyle(color: Colors.black,fontWeight:FontWeight.bold,fontSize: 16)),
+                      ],
+                    ),
+                  ),
+
+                ),
+                Column(
                   children: [
                     ElevatedButton(
                         onPressed: (){
@@ -125,18 +149,22 @@ class _MapPageState extends State<MapPage> {
                          }else{reOpenEmergenceAgain();}
 
                         },
+                        style: ElevatedButton.styleFrom(backgroundColor:Colors.red),
                         child: Text(
                             "Buscar outro profissional",
                                 style:TextStyle(color:Colors.white)
-                        )),
+                        ),),
+                    TextButton(
+                        onPressed:(){if(_isTimeOver)Navigator.push(context,MaterialPageRoute(builder: (context)=>RatingPage(idDocAtendimento:widget.idDocAtendimento)));},
+                        child:Text("Avaliar atendimento",style:TextStyle(color: Colors.white)),
+                        style: ElevatedButton.styleFrom(backgroundColor:Colors.deepPurple))
 
                     //o Botão de avaliação
                   ],
 
+
                 ),
-                TextButton(
-                    onPressed:(){if(_isTimeOver)Navigator.push(context,MaterialPageRoute(builder: (context)=>RatingPage(idDocAtendimento:widget.idDocAtendimento)));},
-                    child:Text("Avaliar atendimento"))
+
               ],
             ),
 
