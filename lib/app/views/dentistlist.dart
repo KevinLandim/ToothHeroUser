@@ -121,8 +121,9 @@ class _DentisListState extends State<DentisList> {
                                   Map <String, dynamic> data = document.data() as Map<String, dynamic>;
 
                                   double distanceInKm = calculateDistance(
-                                      double.parse(data['latitude']),
-                                      double.parse(data['longitude']),
+                                      data['latitude'].toDouble(),
+                                      data['longitude'].toDouble(),
+
                                       widget.latSocorrista,
                                       widget.longSocorrista,
                                   );
@@ -162,8 +163,8 @@ class _DentisListState extends State<DentisList> {
                                                           idDocAtendimento:document.id,
                                                           latSocorrista:widget.latSocorrista,
                                                           longSocorrista:widget.longSocorrista,
-                                                          latDentista:double.parse(data['latitude']),
-                                                          longDentista:double.parse(data['longitude'])
+                                                          latDentista:data['latitude'].toDouble(),
+                                                          longDentista: data['longitude'].toDouble(),
 
                                                             )));
                                                   setState(() {DentisList.profissionalId=data['profissionalId'];});
