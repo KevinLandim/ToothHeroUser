@@ -100,8 +100,8 @@ class _DentisListState extends State<DentisList> {
                       Expanded(
                         child: StreamBuilder<QuerySnapshot>(
                           stream: FirebaseFirestore.instance.collection('atendimentos')//stream é a fonte contínua de dados
-                         //  .where('emergenciaId', isEqualTo: widget.idDocEmergencia)
-                            .where('status', isEqualTo: 'Aceito1')
+                            .where('emergenciaId', isEqualTo: widget.idDocEmergencia)
+                            .where('status', isEqualTo: 'Aceito')
                               .snapshots(),
                           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {//sempre que um valor novo é emitido pelo stream,o builder atualiza
                             if (snapshot.hasError) {
