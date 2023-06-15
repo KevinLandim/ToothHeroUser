@@ -170,7 +170,8 @@ class _RatingPageState extends State<RatingPage>{
                 comentarioApp=_controller.text.toString();
                 print('Input: ${_controller.text}'); // Use the text input
                 Navigator.of(context).pop();
-                print('notaDentista:$notaDentista. comentarioDentista:$comentarioDentista,notaApp:$notaApp,comentarioApp:$comentarioApp');
+                print('notaDentista:$notaDentista. comentarioDentista:$comentarioDentista,'
+                    'notaApp:$notaApp,comentarioApp:$comentarioApp');
                 enviarAvaliacoes();
                 Navigator.push(context,MaterialPageRoute(builder: (context)=>ThanksPage()));
               },

@@ -133,7 +133,7 @@ class _AuthPageState  extends State<AuthPage>{
                             padding: EdgeInsets.only(top: 40),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.horizontal(),
-                              color: Colors.deepPurple,
+                              color: Colors.deepPurple[400],
                             ),
                             height: MediaQuery
                                 .of(context)
@@ -168,8 +168,8 @@ class _AuthPageState  extends State<AuthPage>{
                                       children: [
                                         Container(
                                             child: SizedBox(
-                                              height: 100,
-                                              child: Image.asset("assets/imagens/ic_dente_png.png"),
+                                              height: 140,
+                                              child: Image.asset("assets/imagens/ic_dente_corte.png"),
                                             )
                                         )
                                       ],

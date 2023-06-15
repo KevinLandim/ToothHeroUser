@@ -117,15 +117,17 @@ class TakePictureScreenBothState extends State<TakePictureScreenBoth> {
                   children: [
                     Padding(
                     padding:EdgeInsets.all(10),
-                    child: Text('Foto do responsável com a criança:', textAlign: TextAlign.center, style:TextStyle(
+                    child: Text('Foto do responsável com a criança:', textAlign: TextAlign.center,
+                        style:TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize:20,
+                        fontSize:25,
                         color: Colors.deepPurple
                     )
                     ),
                   ),
                     Container(
                         height: 300.0,
+                        width: 300.0,
                         child: imagePath!= null
                             ?Image.file(File(imagePath!))
                             :CameraPreview(_controller)),

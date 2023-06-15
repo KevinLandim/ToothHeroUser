@@ -170,9 +170,10 @@ class _PersonalDataState extends State<PersonalData>{
                     children: [
                       Padding(
                         padding:EdgeInsets.all(10),
-                        child: Text('Documentos a enviar:', textAlign: TextAlign.center, style:TextStyle(
+                        child: Text('Documentos a enviar:', textAlign: TextAlign.center,
+                            style:TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize:20,
+                            fontSize:25,
                             color: Colors.deepPurple
                         )
                         ),
@@ -199,7 +200,7 @@ class _PersonalDataState extends State<PersonalData>{
                         ),
                       ),
                       Container(
-                        padding:EdgeInsets.only(top:10,bottom:10),
+                        padding:EdgeInsets.only(top:10, bottom:10),
                         width:320,
                         child: TextField(
                           keyboardType: TextInputType.number,

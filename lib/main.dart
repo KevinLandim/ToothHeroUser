@@ -24,6 +24,7 @@ Future<void> main() async {
 
   runApp(
     MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
           primarySwatch: Colors.blue,
           floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -34,9 +35,9 @@ Future<void> main() async {
                   backgroundColor:MaterialStateProperty.all<Color>(Colors.blue)
               )
         )),
-      initialRoute:'/AuthPageRoute' ,
-      routes: {
-        '/AuthPageRoute':(context)=>AuthPage(camera:firstCamera)
+       initialRoute:'/AuthPageRoute' ,
+     routes: {
+         '/AuthPageRoute':(context)=>AuthPage(camera:firstCamera)
       },
     ),
   );

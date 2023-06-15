@@ -120,18 +120,21 @@ class TakePictureScreenDocState extends State<TakePictureScreenDoc> {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                 Padding(
                 padding:EdgeInsets.all(10),
-                child: Text('Tire uma foto do seu documento:', textAlign: TextAlign.center, style:TextStyle(
+                child: Text('Tire uma foto do seu documento:',
+                    textAlign: TextAlign.center, style:TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize:20,
+                    fontSize:25,
                     color: Colors.deepPurple
                 )
                 ),
               ),
                     Container(
                         height: 300.0,
+                        width: 300.0,
                         child: imagePath!= null
                             ?Image.file(File(imagePath!))
                             :CameraPreview(_controller)),
@@ -149,7 +152,8 @@ class TakePictureScreenDocState extends State<TakePictureScreenDoc> {
                       if(imagePath!=null){
                         Navigator.push(
                             context as BuildContext,
-                            MaterialPageRoute(builder:(context)=>TakePictureScreenBoth(camera:widget.camera,listOfImages:widget.listOfImages)));
+                            MaterialPageRoute(builder:(context)=>TakePictureScreenBoth(camera:widget.camera,
+                                listOfImages:widget.listOfImages)));
                       }else{ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                               content:Text("Tire a foto antes de prosseguir")

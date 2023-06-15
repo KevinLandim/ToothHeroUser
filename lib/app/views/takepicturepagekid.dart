@@ -117,9 +117,10 @@ class TakePictureScreenKidState extends State<TakePictureScreenKid> {
                   children: [
                     Padding(
                       padding:EdgeInsets.all(10),
-                      child: Text('Fotografe a boca/região acidentada da criança:', textAlign: TextAlign.center, style:TextStyle(
+                      child: Text('Fotografe a boca/região acidentada da criança:',
+                          textAlign: TextAlign.center, style:TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize:20,
+                          fontSize:25,
                           color: Colors.deepPurple
                       )
                       ),
@@ -127,6 +128,7 @@ class TakePictureScreenKidState extends State<TakePictureScreenKid> {
 
                     Container(
                        height: 300.0,
+                        width: 300.0,
                         child: imagePath!= null
                         ?Image.file(File(imagePath!))
                         :CameraPreview(_controller)),
