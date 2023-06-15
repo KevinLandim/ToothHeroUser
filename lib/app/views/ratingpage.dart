@@ -1,5 +1,4 @@
 
-
 import 'package:ToothHero/app/views/thankspage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -57,7 +56,6 @@ class _RatingPageState extends State<RatingPage>{
               child: Text("Enviar",style:TextStyle(color: Colors.deepPurple)),
               onPressed: () {
                 Navigator.of(context).pop();
-                // TODO: Handle rating submission
                 _mostrarEntradaDeTextoDentista(context);
               },
             ),
@@ -135,7 +133,6 @@ class _RatingPageState extends State<RatingPage>{
               child: Text("Enviar",style:TextStyle(color: Colors.deepPurple)),
               onPressed: () {
                 Navigator.of(context).pop();
-                // TODO: Handle rating submission
                 _mostrarEntradaDeTextoApp(context);
               },
             ),

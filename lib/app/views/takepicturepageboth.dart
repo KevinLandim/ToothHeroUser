@@ -103,14 +103,11 @@ class TakePictureScreenBothState extends State<TakePictureScreenBoth> {
       },
 
       child: Scaffold(
-        // You must wait until the controller is initialized before displaying the
-        // camera preview. Use a FutureBuilder to display a loading spinner until the
-        // controller has finished initializing.
         body: FutureBuilder<void>(
           future: _initializeControllerFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              // If the Future is complete, display the preview.
+              // se o future estiver completo, mostre preview
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

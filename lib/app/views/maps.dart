@@ -32,7 +32,7 @@ class _MapPageState extends State<MapPage> {
   late GoogleMapController mapController;
   late LocationData currentLocation;
   late Location location;
-  bool _isMapReady = false;  // new variable to check if the map is ready
+  bool _isMapReady = false;  // nova variável para checar se o mapa está pronto
   Set<Marker> _markers = Set<Marker>();
 
   @override
@@ -70,7 +70,7 @@ class _MapPageState extends State<MapPage> {
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
     setState(() {
-      _isMapReady = true;  // set _isMapReady to true when map is ready
+      _isMapReady = true;
 
     });
   }
@@ -78,7 +78,7 @@ class _MapPageState extends State<MapPage> {
   @override
   void dispose() {
     super.dispose();
-    if (_isMapReady) {  // only dispose the controller if map is ready
+    if (_isMapReady) {
       mapController.dispose();
     }
     //_timer?.cancel();

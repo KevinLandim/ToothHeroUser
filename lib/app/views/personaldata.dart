@@ -77,7 +77,7 @@ class _PersonalDataState extends State<PersonalData>{
       double lat = await getCoordinates('latitude');
       double long = await getCoordinates('longitude');
 
-      // Construa a URL do servidor de funções
+      //  URL do servidor de funções
       final url = Uri.parse('https://southamerica-east1-toothhero-4102d.cloudfunctions.net/addEmergencia');
       // Dados a serem enviados
       Map<String, String> headers = {"Content-type": "application/json"};
@@ -93,9 +93,9 @@ class _PersonalDataState extends State<PersonalData>{
       });
 
       try {
-        // Faça a solicitação POST
+        //   solicitação POST
         final response = await http.post(url, headers: headers, body: json);
-        // Trate a resposta
+        // Tratamento  da resposta
         if (response.statusCode == 200) {
           final documentId = jsonDecode(response.body)['documentId'];
           ScaffoldMessenger.of(context).showSnackBar(

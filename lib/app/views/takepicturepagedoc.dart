@@ -31,12 +31,8 @@ class TakePictureScreenDocState extends State<TakePictureScreenDoc> {
   @override
   void initState() {
     super.initState();
-    // To display the current output from the Camera,
-    // create a CameraController.
     _controller = CameraController(
-      // Get a specific camera from the list of available cameras.
       widget.camera,
-      // Define the resolution to use.
       ResolutionPreset.medium,
     );
 
@@ -116,7 +112,7 @@ class TakePictureScreenDocState extends State<TakePictureScreenDoc> {
           future: _initializeControllerFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              // If the Future is complete, display the preview.
+              // se o future estiver completo, mostre preview
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
