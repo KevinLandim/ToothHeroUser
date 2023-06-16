@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ffi';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'maps.dart';
@@ -38,7 +39,7 @@ class _DentisListState extends State<DentisList> {
       print('Erro ao atualizar status do documento:$e');
     }
   }
-  Future<void>emergenciaCanceladaUpdate(String documentId) async{
+ /* Future<void>emergenciaCanceladaUpdate(String documentId) async{
     try {
       CollectionReference emergenciasCollection =
           FirebaseFirestore.instance.collection('emergencias');
@@ -46,6 +47,16 @@ class _DentisListState extends State<DentisList> {
     }catch(e){
       print('Erro ao atualizar status do documento:$e');
 
+    }
+  }*/
+  void emergenciaCanceladaUpdate(String documentId)async{
+    HttpsCallable callable=FirebaseFunctions.instance.httpsCallable('emergenciaCanceladaUpdate');
+    final response=await callable.call(<String,dynamic>{'documentId':documentId});
+
+    if(response.data['status']=='success'){
+      print('Documento atualizado com sucesso');
+    }else {
+      print('Erro ao cancelar');
     }
   }
   Future<void>SendCallNotification (String idDocAtendimento) async{

@@ -1,6 +1,7 @@
 
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -83,9 +84,13 @@ class _MapPageState extends State<MapPage> {
     }
     //_timer?.cancel();
   }
-  void reOpenEmergenceAgain(){
-    CollectionReference firestore = FirebaseFirestore.instance.collection('emergencias');
-    firestore.doc(widget.idDocEmergencia).update({'status':'aberta'});
+
+  void reOpenEmergenceAgain() async{
+    HttpsCallable callable=FirebaseFunctions.instance.httpsCallable('reOpenEmergenceAgain');
+    final response = await callable.call(<String,dynamic>{'documentId':widget.idDocEmergencia});
+    if(response.data['status']=='success'){
+      print('emergencia aberta novamente');
+    }else{print('Algo errado');}
 
     Navigator.push(context,MaterialPageRoute(builder: (context)=>
         DentisList(idDocEmergencia: widget.idDocEmergencia,

@@ -52,6 +52,11 @@ class TakePictureScreenBothState extends State<TakePictureScreenBoth> {
   }
 
   TakePhoto() async {
+    if (imagePath != null) { //verifica se a foto já foi tirada,para não tirar foto sem preview
+      ScaffoldMessenger.of(this.context).showSnackBar(
+          SnackBar(content: Text("Para nova foto,clique em repetir foto!"))
+      );
+    }else{
     // Tira a foto em um bloco try/catch. Se algo der errado,o erro é pego.
     try {
       // Certifique que a câmera foi inicializada.
@@ -61,19 +66,20 @@ class TakePictureScreenBothState extends State<TakePictureScreenBoth> {
       try {
         final savedImage = await ImageGallerySaver.saveFile(image.path);
         setState(() {
-          imagePath = image.path;// Atualiza o ImagePath com nova imagem
+          imagePath = image.path; // Atualiza o ImagePath com nova imagem
         });
         setState(() {
           widget.listOfImages.add(image.path);
-        });;
-      } catch(e){
+        });
+        ;
+      } catch (e) {
         print("Ocorreu um erro ao salvar imagem: ${e}");
       }
       if (!mounted) return;
-
     } catch (e) {
       print(e);
     }
+  }
 
   }
   TextButton CreateButtons(String name, VoidCallback function,IconData icon){

@@ -36,3 +36,46 @@ app.post("/", async (req: express.Request, res: express.Response) => {
 
 export const addEmergencia = functions.region("southamerica-east1")
   .https.onRequest(app);
+
+
+export const emergenciaCanceladaUpdate = functions.https
+  .onCall(async (data) => {
+    const documentId = data.documentId;
+    const db = admin.firestore();
+    const emergenciasCollection = db.collection("emergencias");
+
+    try {
+      await emergenciasCollection.doc(documentId)
+        .update({"status": "cancelada"});
+      return {
+        status: "success",
+        message: "Documento felizmente atualizeido",
+      };
+    } catch (e) {
+      console.log("Erro ao atualizar o documento:", e);
+      throw new functions.https
+        .HttpsError("unknown", "algum erro ocorreu", e);
+    }
+  });
+
+export const reOpenEmergenceAgain = functions.https
+  .onCall(async (data) => {
+    const documentId = data.documentId;
+    const db = admin.firestore();
+    const emergenciasCollection = db.collection("emergencias");
+
+    try {
+      await emergenciasCollection.doc(documentId)
+        .update({"status": "aberta"});
+      return {
+        status: "success",
+        message: "Documento felizmente atualizeido",
+      };
+    } catch (e) {
+      console.log("Erro ao atualizar o documento:", e);
+      throw new functions.https
+        .HttpsError("unknown", "algum erro ocorreu", e);
+    }
+  });
+
+
