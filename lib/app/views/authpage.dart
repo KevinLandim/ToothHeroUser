@@ -157,7 +157,7 @@ class _AuthPageState  extends State<AuthPage>{
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 40, color: Colors.white),
-                                    ),
+                                    ),//
                                       Text("    Bem vindo\n    Ao ToothHero!", style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 20, color: Colors.white54),
