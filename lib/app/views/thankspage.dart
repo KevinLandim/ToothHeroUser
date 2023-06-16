@@ -16,7 +16,7 @@ class ThanksPage extends StatelessWidget{
           children: [
             SizedBox(
               height:300,
-                child: Image.asset("assets/imagens/ic_dente_png.png")),
+                child: Image.asset("assets/imagens/ic_dente_corte.png")),
             Center(
               child: Card(
                 elevation: 10, // Ajusta a elevação do cartão

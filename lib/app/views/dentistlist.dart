@@ -123,7 +123,6 @@ class _DentisListState extends State<DentisList> {
                                   double distanceInKm = calculateDistance(
                                       data['latitude'].toDouble(),
                                       data['longitude'].toDouble(),
-
                                       widget.latSocorrista,
                                       widget.longSocorrista,
                                   );

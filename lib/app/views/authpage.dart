@@ -12,8 +12,10 @@ class AuthPage extends StatefulWidget {
   const AuthPage({super.key,required this.camera});
   final CameraDescription camera;
 
+
   @override
   _AuthPageState createState() => _AuthPageState(camera);
+  static String? idAnonimo;
 
 }
 
@@ -21,6 +23,7 @@ class _AuthPageState  extends State<AuthPage>{
   _AuthPageState(CameraDescription camera);
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _isLoading = false;
+
 
   checkInternet() async {
     try {
@@ -53,6 +56,10 @@ class _AuthPageState  extends State<AuthPage>{
     try {
       UserCredential userCredential = await _auth.signInAnonymously();
       print("User signed in: ${userCredential.user}");
+      print('uid:${userCredential.user!.uid}');
+      setState(() {
+        AuthPage.idAnonimo=userCredential.user!.uid;
+      });
 
     } catch (e) {
       print("Error signing in: $e");
@@ -140,22 +147,18 @@ class _AuthPageState  extends State<AuthPage>{
                                 .size
                                 .height / 3.5,
                             child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment
                                         .start,
-                                    children: <Widget>[ Text("Olá,",
+                                    children: <Widget>[ Text("  Olá,",
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 40, color: Colors.white),
                                     ),
-                                      Text("Bem vindo", style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20, color: Colors.white54),
-                                      ),
-                                      Text("Ao Tooth-hero!", style: TextStyle(
+                                      Text("    Bem vindo\n    Ao ToothHero!", style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 20, color: Colors.white54),
                                       ),

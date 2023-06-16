@@ -7,6 +7,8 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:ToothHero/app/views/dentistlist.dart';
 import 'package:ToothHero/app/views/personaldata.dart';
 
+import 'authpage.dart';
+
 
 class RatingPage extends StatefulWidget{
   final String idDocAtendimento;
@@ -193,9 +195,10 @@ class _RatingPageState extends State<RatingPage>{
           'atendimentoId': widget.idDocAtendimento,
           'nota': notaDentista,
           'comentario': comentarioDentista,
-          'datahora': datahora,
-          'nomesocorrista': PersonalData.nomeSocorrista,
-          'profissionalId':DentisList.profissionalId
+          'dataHora': datahora,
+          'nomeSocorrista': PersonalData.nomeSocorrista,
+          'dentistaId':DentisList.profissionalId,
+          'socorristaId': AuthPage.idAnonimo,
         });
       }catch(e){print('Erro ao enviar avaliações');}
     }

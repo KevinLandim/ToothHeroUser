@@ -17,6 +17,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final cameras = await availableCameras();
   final firstCamera = cameras[0];
+
    await Firebase.initializeApp(
       options:DefaultFirebaseOptions.currentPlatform);
 

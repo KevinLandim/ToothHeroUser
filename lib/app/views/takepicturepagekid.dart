@@ -120,7 +120,7 @@ class TakePictureScreenKidState extends State<TakePictureScreenKid> {
 
                     Container(
                        height: 300.0,
-                        width: 300.0,
+                        width: 200.0,
                         child: imagePath!= null
                         ?Image.file(File(imagePath!))
                         :CameraPreview(_controller)),
