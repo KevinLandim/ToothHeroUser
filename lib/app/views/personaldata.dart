@@ -11,6 +11,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dentistlist.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 
 class PersonalData extends StatefulWidget {
@@ -76,6 +77,8 @@ class _PersonalDataState extends State<PersonalData>{
         String imageKidPath,String imageDocPath,String imageBothPath) async {
       double lat = await getCoordinates('latitude');
       double long = await getCoordinates('longitude');
+      DateTime now = DateTime.now();
+      String formattedDate = DateFormat('dd-MM-yyyy – kk:mm').format(now);
 
       //  URL do servidor de funções
       final url = Uri.parse('https://southamerica-east1-toothhero-4102d.cloudfunctions.net/addEmergencia');
@@ -84,7 +87,7 @@ class _PersonalDataState extends State<PersonalData>{
       String json = jsonEncode({
         'nome': nome,
         'telefone': telefone,
-        'datahora': DateTime.now().toString(),
+        'datahora': formattedDate.toString(),
         'imageKidPath': imageKidPath,
         'imageDocPath': imageDocPath,
         'imageBothPath': imageBothPath,
