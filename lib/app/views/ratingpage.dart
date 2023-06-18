@@ -1,6 +1,8 @@
 
 import 'package:ToothHero/app/views/thankspage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+//import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -188,8 +190,7 @@ class _RatingPageState extends State<RatingPage>{
   }
   
     enviarAvaliacoes() async{
-
-      try {
+     /* try {
         var datahora = DateTime.now().toString();
         await FirebaseFirestore.instance.collection('avaliacoes').add({
           'atendimentoId': widget.idDocAtendimento,
@@ -200,7 +201,27 @@ class _RatingPageState extends State<RatingPage>{
           'dentistaId':DentisList.profissionalId,
           'socorristaId': AuthPage.idAnonimo,
         });
-      }catch(e){print('Erro ao enviar avaliações');}
+
+      }catch(e){print('Erro ao enviar avaliações');}*/
+      FirebaseFunctions functions =FirebaseFunctions.instanceFor(region:"southamerica-east1");
+      HttpsCallable callable =functions.httpsCallable('enviarAvaliacoes');
+      var datahora = DateTime.now().toString();
+      final response=await callable.call(<String,dynamic>{
+        'atendimentoId': widget.idDocAtendimento,
+        'nota': notaDentista,
+        'comentario': comentarioDentista,
+        'dataHora': datahora,
+        'nomeSocorrista': PersonalData.nomeSocorrista,
+        'dentistaId':DentisList.profissionalId,
+        'socorristaId': AuthPage.idAnonimo,
+
+      });
+      if(response.data['status']=='success'){
+        print('Documento atualizado com sucesso');
+      }else {
+        print('Erro ao cancelar');
+      }
+
     }
 
 

@@ -131,8 +131,36 @@ export const cancelAtendimentoStatusUpdate=functions
     try {
       await atendimentosCollection.doc(documentId)
         .update({"status": "cancelado"});
+      return {
+        status: "success",
+        message: "Documento atualizado",
+      };
     } catch (e) {
       console.log("Erro ao atualizar o documento:", e);
+      throw new functions.https
+        .HttpsError("unknown", "algum erro ocorreu", e);
+    }
+  });
+
+export const enviarAvaliacoes=functions
+  .region("southamerica-east1").https
+  .onCall(async (data)=>{
+    const db = admin.firestore();
+    const avaliacoesCollection = db.collection("avaliacoes");
+    const documentData={
+      atendimentoId: data.atendimentoId,
+      nota: data.nota,
+      comentario: data.comentario,
+      dataHora: data.dataHora,
+      nomeSocorrista: data.nomeSocorrista,
+      dentistaId: data.dentistaId,
+      socorristaId: data.socorristaId,
+    };
+    try {
+      const docRef = await avaliacoesCollection.add(documentData);
+      return {id: docRef.id};
+    } catch (e) {
+      console.log("Erro ao adicionar o documento:", e);
       throw new functions.https
         .HttpsError("unknown", "algum erro ocorreu", e);
     }
