@@ -24,33 +24,22 @@ class DentisList extends StatefulWidget{
 
 class _DentisListState extends State<DentisList> {
 
-
-
-
   Future<void> emergenciaFechadaUpdate(String documentId) async {//executada quando o socorrista escolhe o dentista
-    try {
-      CollectionReference emergenciasCollection =
-      FirebaseFirestore.instance.collection('emergencias');
-      await emergenciasCollection.doc(documentId).update({
-        'status': 'fechada',
-      });
-      print('Documento atualizado.');
-    } catch (e) {
-      print('Erro ao atualizar status do documento:$e');
+    FirebaseFunctions functions=FirebaseFunctions.instanceFor(region: 'southamerica-east1');
+    HttpsCallable callable=functions.httpsCallable('emergenciaFechadaUpdate');
+    final response=await callable.call(<String,dynamic>{'documentId':documentId});
+    if(response.data['status']=='success'){
+      print('Documento atualizado com sucesso');
+    }else {
+      print('Erro ao cancelar');
     }
-  }
- /* Future<void>emergenciaCanceladaUpdate(String documentId) async{
-    try {
-      CollectionReference emergenciasCollection =
-          FirebaseFirestore.instance.collection('emergencias');
-          await emergenciasCollection.doc(documentId).update({'status':'cancelada'});
-    }catch(e){
-      print('Erro ao atualizar status do documento:$e');
+  //muda status da emergencia para 'fechada'
 
-    }
-  }*/
-  void emergenciaCanceladaUpdate(String documentId)async{
-    HttpsCallable callable=FirebaseFunctions.instance.httpsCallable('emergenciaCanceladaUpdate');
+  }
+
+  void emergenciaCanceladaUpdate(String documentId)async{//muda status da emergencia para 'cancelada'
+    FirebaseFunctions functions =FirebaseFunctions.instanceFor(region:"southamerica-east1");
+    HttpsCallable callable=functions.httpsCallable('emergenciaCanceladaUpdate');
     final response=await callable.call(<String,dynamic>{'documentId':documentId});
 
     if(response.data['status']=='success'){
@@ -59,14 +48,16 @@ class _DentisListState extends State<DentisList> {
       print('Erro ao cancelar');
     }
   }
-  Future<void>SendCallNotification (String idDocAtendimento) async{
-    try {
-      CollectionReference atendimentosCollection = FirebaseFirestore.instance.collection('atendimentos');
-      atendimentosCollection.doc(idDocAtendimento).update({'status':'em andamento'});
-    }catch(e){
-      print('Erro ao atualizar status do documento:$e');
-
+  Future<void>SendCallNotification (String idDocAtendimento) async{ //muda status de atendimento para 'em andamento'
+    FirebaseFunctions functions=FirebaseFunctions.instanceFor(region:'southamerica-east1');
+    HttpsCallable callable=functions.httpsCallable('sendCallNotification');
+    final response=await callable.call(<String,dynamic>{'documentId':idDocAtendimento});
+    if(response.data['status']=='success'){
+      print('Documento atualizado com sucesso');
+    }else {
+      print('Erro ao cancelar');
     }
+
 
   }
   double calculateDistance(double lat1, double lon1, double lat2, double lon2) {

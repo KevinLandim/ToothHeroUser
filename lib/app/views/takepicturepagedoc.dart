@@ -36,7 +36,6 @@ class TakePictureScreenDocState extends State<TakePictureScreenDoc> {
       ResolutionPreset.medium,
     );
 
-    // Next, initialize the controller. This returns a Future.
     _initializeControllerFuture = _controller.initialize();
   }
 

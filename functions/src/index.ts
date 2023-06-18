@@ -38,7 +38,8 @@ export const addEmergencia = functions.region("southamerica-east1")
   .https.onRequest(app);
 
 
-export const emergenciaCanceladaUpdate = functions.https
+export const emergenciaCanceladaUpdate = functions
+  .region("southamerica-east1").https
   .onCall(async (data) => {
     const documentId = data.documentId;
     const db = admin.firestore();
@@ -58,7 +59,8 @@ export const emergenciaCanceladaUpdate = functions.https
     }
   });
 
-export const reOpenEmergenceAgain = functions.https
+export const reOpenEmergenceAgain = functions
+  .region("southamerica-east1").https
   .onCall(async (data) => {
     const documentId = data.documentId;
     const db = admin.firestore();
@@ -78,4 +80,61 @@ export const reOpenEmergenceAgain = functions.https
     }
   });
 
+export const emergenciaFechadaUpdate = functions
+  .region("southamerica-east1").https
+  .onCall(async (data) => {
+    const documentId = data.documentId;
+    const db = admin.firestore();
+    const emergenciasCollection = db.collection("emergencias");
+
+    try {
+      await emergenciasCollection.doc(documentId)
+        .update({"status": "fechada"});
+      return {
+        status: "success",
+        message: "Documento felizmente atualizeido",
+      };
+    } catch (e) {
+      console.log("Erro ao atualizar o documento:", e);
+      throw new functions.https
+        .HttpsError("unknown", "algum erro ocorreu", e);
+    }
+  });
+
+export const sendCallNotification = functions
+  .region("southamerica-east1").https
+  .onCall(async (data) => {
+    const documentId = data.documentId;
+    const db = admin.firestore();
+    const atendimentosCollection = db.collection("atendimentos");
+
+    try {
+      await atendimentosCollection.doc(documentId)
+        .update({"status": "em andamento"});
+      return {
+        status: "success",
+        message: "Documento atualizado",
+      };
+    } catch (e) {
+      console.log("Erro ao atualizar o documento:", e);
+      throw new functions.https
+        .HttpsError("unknown", "algum erro ocorreu", e);
+    }
+  });
+
+export const cancelAtendimentoStatusUpdate=functions
+  .region("southamerica-east1").https
+  .onCall(async (data)=>{
+    const documentId = data.documentId;
+    const db = admin.firestore();
+    const atendimentosCollection = db.collection("atendimentos");
+    try {
+      await atendimentosCollection.doc(documentId)
+        .update({"status": "cancelado"});
+    } catch (e) {
+      console.log("Erro ao atualizar o documento:", e);
+      throw new functions.https
+        .HttpsError("unknown", "algum erro ocorreu", e);
+    }
+  });
 

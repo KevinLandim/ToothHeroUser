@@ -237,9 +237,7 @@ class _AuthPageState  extends State<AuthPage>{
                                 MaterialPageRoute(builder: (context) =>
                                     TakePictureScreenKid(camera: widget.camera)
                                   //FirstPage(camera: widget.camera)
-
                                 )
-
                             );
                             decoration:
                             BoxDecoration(
@@ -247,7 +245,6 @@ class _AuthPageState  extends State<AuthPage>{
                               color: Colors.deepPurple,
                             );
                           },
-
                           style: ElevatedButton.styleFrom(backgroundColor:Colors.deepPurple),
                           child:const Text("Clique aqui para solicitar o socorro!"),
                         ),

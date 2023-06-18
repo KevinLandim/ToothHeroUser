@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -86,7 +87,8 @@ class _MapPageState extends State<MapPage> {
   }
 
   void reOpenEmergenceAgain() async{
-    HttpsCallable callable=FirebaseFunctions.instance.httpsCallable('reOpenEmergenceAgain');
+    FirebaseFunctions functions = FirebaseFunctions.instanceFor(region: "southamerica-east1");
+    HttpsCallable callable=functions.httpsCallable('reOpenEmergenceAgain');
     final response = await callable.call(<String,dynamic>{'documentId':widget.idDocEmergencia});
     if(response.data['status']=='success'){
       print('emergencia aberta novamente');
@@ -96,6 +98,18 @@ class _MapPageState extends State<MapPage> {
         DentisList(idDocEmergencia: widget.idDocEmergencia,
             latSocorrista: widget.latSocorrista,
             longSocorrista: widget.longSocorrista)));
+     cancelAtendimentoStatusUpdate();
+
+  }
+
+  void cancelAtendimentoStatusUpdate()async{
+    FirebaseFunctions functions = FirebaseFunctions.instanceFor(region: "southamerica-east1");
+    HttpsCallable callable=functions.httpsCallable('cancelAtendimentoStatusUpdate');
+    final response = await callable.call(<String,dynamic>{'documentId':widget.idDocAtendimento});
+    if(response.data['status']=='success'){
+      print('status de atendimento mudado para "cancelado"');
+    }else{print('Algo errado');}
+
   }
 
 
