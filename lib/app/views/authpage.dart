@@ -207,17 +207,16 @@ class _AuthPageState  extends State<AuthPage>{
                                 .size
                                 .width / 1.3,
                             child: Padding(
-                              padding: EdgeInsets.only(left: 10, top: 20),
+                              padding: EdgeInsets.only(left: 10, top: 40),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
-                                    "Nossa plataforma oferece facilidade tanto ao usuario e ao colaborador a oferecer um serviço"
-                                        " de atendimento de urgencia direcionado ao publico infantil.",
+                                    "Nossa plataforma foi feita para atender suas emergências sempre que precisar!",
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 20,
+                                        fontSize: 25,
                                         color: Colors.white
                                     ),
                                   ),
